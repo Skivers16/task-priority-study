@@ -1041,3 +1041,153 @@ select.text-input {
 .gantt-row {
   min-height: 78px;
 }
+
+
+/* ===== Revision 1.1.2: center Gantt endpoints + clearer drag hint ===== */
+.gantt-bar::before,
+.gantt-bar::after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.view-caption .caption-right.drag-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #d8e0ff;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #3f58d7;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  box-shadow: 0 8px 20px rgba(76, 99, 214, .08);
+}
+
+.view-caption .caption-right.drag-tip::before {
+  content: "TIP";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #fff;
+  color: #4860d8;
+  font: 700 10px var(--mono);
+  letter-spacing: .08em;
+}
+
+@media (max-width: 850px) {
+  .view-caption .caption-right.drag-tip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
+/* ===== Revision 1.1.3: endpoint circles centered + prominent drag instruction ===== */
+
+/* Center each endpoint marker vertically and on the actual bar endpoint. */
+.gantt-bar::before,
+.gantt-bar::after {
+  top: 50% !important;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  z-index: 4;
+}
+
+.gantt-bar::before {
+  left: 0 !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.gantt-bar::after {
+  right: 0 !important;
+  left: auto !important;
+  transform: translate(50%, -50%) !important;
+}
+
+/* Make the drag-and-drop instructions hard to miss without adding dense text. */
+.drag-instruction {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 18px;
+  padding: 15px 18px;
+  border: 2px solid #cbd6ff;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #eef2ff 0%, #f8f9ff 100%);
+  color: #27356e;
+  box-shadow: 0 8px 22px rgba(76, 99, 214, .10);
+}
+
+.drag-instruction-icon {
+  display: inline-flex;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #465de0;
+  color: #fff;
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.drag-instruction-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.drag-instruction-copy strong {
+  color: #293a93;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.drag-instruction-copy > span {
+  color: #47516d;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.view-caption .caption-right.drag-tip {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .drag-instruction {
+    align-items: flex-start;
+    gap: 11px;
+    margin-bottom: 14px;
+    padding: 13px;
+    border-radius: 14px;
+  }
+
+  .drag-instruction-icon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    font-size: 20px;
+  }
+
+  .drag-instruction-copy strong {
+    font-size: 13px;
+  }
+
+  .drag-instruction-copy > span {
+    font-size: 12px;
+  }
+}

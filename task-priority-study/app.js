@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.1.1";
+  const APP_VERSION = "1.1.3";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -9,192 +9,53 @@
     config.supabaseUrl &&
     config.supabasePublishableKey &&
     window.supabase &&
-    typeof window.supabase.createClient === "function",
+    typeof window.supabase.createClient === "function"
   );
   const db = isCloudMode
-    ? window.supabase.createClient(
-        config.supabaseUrl,
-        config.supabasePublishableKey,
-      )
+    ? window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey)
     : null;
 
   const CATEGORY_LABELS = {
     akademis: "Akademis",
     lomba: "Lomba",
     kepanitiaan: "Kepanitiaan",
-    organisasi: "Organisasi",
+    organisasi: "Organisasi"
   };
 
   // Dua set tugas menggunakan sepuluh deadline unik yang sama untuk menjaga tingkat kesulitan relatif.
   // Urutan baris sengaja tidak mengikuti urutan deadline.
   const TASK_SETS = {
     A: [
-      {
-        id: "A01",
-        name: "Mengumpulkan laporan praktikum",
-        category: "akademis",
-        startDay: 12,
-        dueDay: 23,
-      },
-      {
-        id: "A02",
-        name: "Menyelesaikan validasi basis data",
-        category: "akademis",
-        startDay: 10,
-        dueDay: 17,
-      },
-      {
-        id: "A03",
-        name: "Finalisasi desain antarmuka lomba",
-        category: "lomba",
-        startDay: 6,
-        dueDay: 25,
-      },
-      {
-        id: "A04",
-        name: "Mengedit video teaser acara",
-        category: "kepanitiaan",
-        startDay: 14,
-        dueDay: 20,
-      },
-      {
-        id: "A05",
-        name: "Membuat proposal kegiatan",
-        category: "organisasi",
-        startDay: 11,
-        dueDay: 26,
-      },
-      {
-        id: "A06",
-        name: "Menyusun ringkasan evaluasi lomba",
-        category: "lomba",
-        startDay: 5,
-        dueDay: 18,
-      },
-      {
-        id: "A07",
-        name: "Membuat desain poster publikasi",
-        category: "kepanitiaan",
-        startDay: 15,
-        dueDay: 22,
-      },
-      {
-        id: "A08",
-        name: "Menyusun laporan program kerja",
-        category: "organisasi",
-        startDay: 8,
-        dueDay: 24,
-      },
-      {
-        id: "A09",
-        name: "Menyiapkan presentasi proyek",
-        category: "akademis",
-        startDay: 9,
-        dueDay: 19,
-      },
-      {
-        id: "A10",
-        name: "Melengkapi dokumen pendaftaran",
-        category: "lomba",
-        startDay: 3,
-        dueDay: 21,
-      },
+      { id: "A01", name: "Mengumpulkan laporan praktikum", category: "akademis", startDay: 12, dueDay: 23 },
+      { id: "A02", name: "Menyelesaikan validasi basis data", category: "akademis", startDay: 10, dueDay: 17 },
+      { id: "A03", name: "Finalisasi desain antarmuka lomba", category: "lomba", startDay: 6, dueDay: 25 },
+      { id: "A04", name: "Mengedit video teaser acara", category: "kepanitiaan", startDay: 14, dueDay: 20 },
+      { id: "A05", name: "Membuat proposal kegiatan", category: "organisasi", startDay: 11, dueDay: 26 },
+      { id: "A06", name: "Menyusun ringkasan evaluasi lomba", category: "lomba", startDay: 5, dueDay: 18 },
+      { id: "A07", name: "Membuat desain poster publikasi", category: "kepanitiaan", startDay: 15, dueDay: 22 },
+      { id: "A08", name: "Menyusun laporan program kerja", category: "organisasi", startDay: 8, dueDay: 24 },
+      { id: "A09", name: "Menyiapkan presentasi proyek", category: "akademis", startDay: 9, dueDay: 19 },
+      { id: "A10", name: "Melengkapi dokumen pendaftaran", category: "lomba", startDay: 3, dueDay: 21 }
     ],
     B: [
-      {
-        id: "B01",
-        name: "Mengunggah berkas administrasi lomba",
-        category: "lomba",
-        startDay: 7,
-        dueDay: 22,
-      },
-      {
-        id: "B02",
-        name: "Menyusun rundown final kegiatan",
-        category: "kepanitiaan",
-        startDay: 13,
-        dueDay: 18,
-      },
-      {
-        id: "B03",
-        name: "Finalisasi desain poster lomba",
-        category: "lomba",
-        startDay: 9,
-        dueDay: 25,
-      },
-      {
-        id: "B04",
-        name: "Mengirim notulen rapat organisasi",
-        category: "organisasi",
-        startDay: 10,
-        dueDay: 20,
-      },
-      {
-        id: "B05",
-        name: "Menyerahkan revisi laporan penelitian",
-        category: "akademis",
-        startDay: 8,
-        dueDay: 17,
-      },
-      {
-        id: "B06",
-        name: "Menyusun evaluasi program organisasi",
-        category: "organisasi",
-        startDay: 3,
-        dueDay: 24,
-      },
-      {
-        id: "B07",
-        name: "Menguji prototipe fitur utama",
-        category: "akademis",
-        startDay: 14,
-        dueDay: 21,
-      },
-      {
-        id: "B08",
-        name: "Menyiapkan lampiran presentasi",
-        category: "akademis",
-        startDay: 15,
-        dueDay: 26,
-      },
-      {
-        id: "B09",
-        name: "Menyelesaikan draft anggaran lomba",
-        category: "lomba",
-        startDay: 5,
-        dueDay: 19,
-      },
-      {
-        id: "B10",
-        name: "Menyelesaikan materi publikasi acara",
-        category: "kepanitiaan",
-        startDay: 11,
-        dueDay: 23,
-      },
-    ],
+      { id: "B01", name: "Mengunggah berkas administrasi lomba", category: "lomba", startDay: 7, dueDay: 22 },
+      { id: "B02", name: "Menyusun rundown final kegiatan", category: "kepanitiaan", startDay: 13, dueDay: 18 },
+      { id: "B03", name: "Finalisasi desain poster lomba", category: "lomba", startDay: 9, dueDay: 25 },
+      { id: "B04", name: "Mengirim notulen rapat organisasi", category: "organisasi", startDay: 10, dueDay: 20 },
+      { id: "B05", name: "Menyerahkan revisi laporan penelitian", category: "akademis", startDay: 8, dueDay: 17 },
+      { id: "B06", name: "Menyusun evaluasi program organisasi", category: "organisasi", startDay: 3, dueDay: 24 },
+      { id: "B07", name: "Menguji prototipe fitur utama", category: "akademis", startDay: 14, dueDay: 21 },
+      { id: "B08", name: "Menyiapkan lampiran presentasi", category: "akademis", startDay: 15, dueDay: 26 },
+      { id: "B09", name: "Menyelesaikan draft anggaran lomba", category: "lomba", startDay: 5, dueDay: 19 },
+      { id: "B10", name: "Menyelesaikan materi publikasi acara", category: "kepanitiaan", startDay: 11, dueDay: 23 }
+    ]
   };
 
   const PLANS = [
-    {
-      id: "list-A__gantt-B",
-      order: ["list", "gantt"],
-      setByView: { list: "A", gantt: "B" },
-    },
-    {
-      id: "list-B__gantt-A",
-      order: ["list", "gantt"],
-      setByView: { list: "B", gantt: "A" },
-    },
-    {
-      id: "gantt-A__list-B",
-      order: ["gantt", "list"],
-      setByView: { gantt: "A", list: "B" },
-    },
-    {
-      id: "gantt-B__list-A",
-      order: ["gantt", "list"],
-      setByView: { gantt: "B", list: "A" },
-    },
+    { id: "list-A__gantt-B", order: ["list", "gantt"], setByView: { list: "A", gantt: "B" } },
+    { id: "list-B__gantt-A", order: ["list", "gantt"], setByView: { list: "B", gantt: "A" } },
+    { id: "gantt-A__list-B", order: ["gantt", "list"], setByView: { gantt: "A", list: "B" } },
+    { id: "gantt-B__list-A", order: ["gantt", "list"], setByView: { gantt: "B", list: "A" } }
   ];
 
   const state = {
@@ -216,26 +77,24 @@
     sessionStartedAt: null,
     sessionStartMs: 0,
     timerHandle: null,
-    pendingCompletion: null,
+    pendingCompletion: null
   };
 
   const app = document.getElementById("app");
   const modeLabel = document.getElementById("mode-label");
   const modeDot = document.getElementById("mode-dot");
 
-  modeLabel.textContent = isCloudMode
-    ? "Penyimpanan database aktif"
-    : "Mode demo · lokal";
+  modeLabel.textContent = isCloudMode ? "Penyimpanan database aktif" : "Mode demo · lokal";
   if (isCloudMode) modeDot.classList.add("online");
 
   function uuid() {
-    if (window.crypto && typeof window.crypto.randomUUID === "function")
-      return window.crypto.randomUUID();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      const r = (Math.random() * 16) | 0;
-      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
     });
   }
+
 
   function generateParticipantCode() {
     const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -249,55 +108,36 @@
       }
     }
 
-    const suffix = Array.from(
-      randomValues,
-      (value) => alphabet[value & 31],
-    ).join("");
+    const suffix = Array.from(randomValues, value => alphabet[value & 31]).join("");
     return `RSP-${suffix}`;
   }
 
   function chooseBalancedLocalPlan() {
-    const sessions = getLocalStore().sessions.filter(
-      (session) =>
-        !String(session.participant_code || "")
-          .toUpperCase()
-          .startsWith("TEST-"),
+    const sessions = getLocalStore().sessions.filter(session =>
+      !String(session.participant_code || "").toUpperCase().startsWith("TEST-")
     );
 
-    const counts = PLANS.map((plan) => ({
+    const counts = PLANS.map(plan => ({
       plan,
-      count: sessions.filter((session) => session.sequence_plan === plan.id)
-        .length,
+      count: sessions.filter(session => session.sequence_plan === plan.id).length
     }));
 
-    const lowestCount = Math.min(...counts.map((item) => item.count));
+    const lowestCount = Math.min(...counts.map(item => item.count));
     const candidates = counts
-      .filter((item) => item.count === lowestCount)
-      .map((item) => item.plan);
+      .filter(item => item.count === lowestCount)
+      .map(item => item.plan);
 
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
   function escapeHtml(value) {
-    return String(value).replace(
-      /[&<>"']/g,
-      (char) =>
-        ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        })[char],
-    );
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
   }
 
-  function shortDate(day) {
-    return `${String(day).padStart(2, "0")} Okt`;
-  }
-  function fullDate(day) {
-    return `2026-10-${String(day).padStart(2, "0")}`;
-  }
+  function shortDate(day) { return `${String(day).padStart(2, "0")} Okt`; }
+  function fullDate(day) { return `2026-10-${String(day).padStart(2, "0")}`; }
   function formatMs(ms) {
     const safe = Math.max(0, Math.floor(ms || 0));
     const minutes = Math.floor(safe / 60000);
@@ -310,13 +150,9 @@
     return `${seconds.toFixed(2).replace(".", ",")} dtk`;
   }
   function formatPercent(numerator, denominator) {
-    return denominator
-      ? `${Math.round((numerator / denominator) * 100)}%`
-      : "0%";
+    return denominator ? `${Math.round((numerator / denominator) * 100)}%` : "0%";
   }
-  function nowIso() {
-    return new Date().toISOString();
-  }
+  function nowIso() { return new Date().toISOString(); }
   function expectedTasks(tasks) {
     return [...tasks].sort((a, b) => a.dueDay - b.dueDay);
   }
@@ -325,16 +161,11 @@
   }
   function getLocalStore() {
     try {
-      const parsed = JSON.parse(
-        localStorage.getItem("fieldnote-study-demo") ||
-          '{"sessions":[],"trials":[],"completions":[]}',
-      );
+      const parsed = JSON.parse(localStorage.getItem("fieldnote-study-demo") || '{"sessions":[],"trials":[],"completions":[]}');
       return {
         sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [],
         trials: Array.isArray(parsed.trials) ? parsed.trials : [],
-        completions: Array.isArray(parsed.completions)
-          ? parsed.completions
-          : [],
+        completions: Array.isArray(parsed.completions) ? parsed.completions : []
       };
     } catch (_) {
       return { sessions: [], trials: [], completions: [] };
@@ -383,7 +214,7 @@
               <p>Isi biodata singkat berikut, lalu mulai eksperimen.</p>
               <form id="start-form">
                 <label class="form-label" for="participant-name">Nama</label>
-                <input class="text-input" id="participant-name" name="participant-name" maxlength="120" minlength="2" placeholder="Contoh: Arief Wicaksono" autocomplete="name" required>
+                <input class="text-input" id="participant-name" name="participant-name" maxlength="120" minlength="2" placeholder="Contoh: Lia Ninda" autocomplete="name" required>
 
                 <label class="form-label" for="study-program">Program studi</label>
                 <select class="text-input" id="study-program" name="study-program" required>
@@ -426,9 +257,7 @@
           </div>
         </div>
       </section>`;
-    document
-      .getElementById("start-form")
-      .addEventListener("submit", handleStart);
+    document.getElementById("start-form").addEventListener("submit", handleStart);
   }
 
   async function handleStart(event) {
@@ -462,8 +291,7 @@
       return;
     }
     if (participantCode.length < 3) {
-      error.textContent =
-        "Kode responden belum valid. Muat ulang halaman jika perlu.";
+      error.textContent = "Kode responden belum valid. Muat ulang halaman jika perlu.";
       return;
     }
     if (!consent.checked) {
@@ -491,17 +319,15 @@
             p_app_version: APP_VERSION,
             p_participant_name: participantName,
             p_study_program: studyProgram,
-            p_cohort_year: cohortYear,
-          },
+            p_cohort_year: cohortYear
+          }
         );
 
         if (allocationError) throw allocationError;
 
-        plan = PLANS.find((item) => item.id === assignedPlanId);
+        plan = PLANS.find(item => item.id === assignedPlanId);
         if (!plan) {
-          throw new Error(
-            "Supabase returned an unknown counterbalancing plan.",
-          );
+          throw new Error("Supabase returned an unknown counterbalancing plan.");
         }
       } else {
         plan = chooseBalancedLocalPlan();
@@ -515,7 +341,7 @@
           consent: true,
           sequence_plan: plan.id,
           started_at: startedAt,
-          app_version: APP_VERSION,
+          app_version: APP_VERSION
         };
 
         appendLocal("sessions", sessionRow);
@@ -545,10 +371,7 @@
     stopTimer();
     state.currentView = state.plan.order[state.trialIndex];
     state.currentSet = state.plan.setByView[state.currentView];
-    state.currentTasks = TASK_SETS[state.currentSet].map((task) => ({
-      ...task,
-      rank: "",
-    }));
+    state.currentTasks = TASK_SETS[state.currentSet].map(task => ({ ...task, rank: "" }));
     state.currentTrialId = uuid();
     state.trialStartedAt = null;
     state.trialStartPerf = 0;
@@ -609,9 +432,15 @@
         <div class="error-banner ${errorText ? "visible" : ""}" id="trial-error" role="alert">${escapeHtml(errorText)}</div>
 
         <div class="view-container">
+          <div class="drag-instruction" role="note" aria-label="Petunjuk drag and drop">
+            <span class="drag-instruction-icon" aria-hidden="true">↕</span>
+            <span class="drag-instruction-copy">
+              <strong>Cara mengubah urutan</strong>
+              <span>Klik dan tahan baris task mana pun — termasuk area timeline — lalu seret ke posisi yang diinginkan dan lepaskan.</span>
+            </span>
+          </div>
           <div class="view-caption">
             <span class="caption-title">${state.currentView === "list" ? "Daftar task" : "Timeline task"}</span>
-            <span class="caption-right">Seret baris task untuk mengubah urutan</span>
           </div>
           <div class="view-scroll">${state.currentView === "list" ? renderListView() : renderGanttView()}</div>
         </div>
@@ -623,9 +452,7 @@
           </div>
         </div>
 
-        ${
-          showInstructionModal
-            ? `
+        ${showInstructionModal ? `
           <div class="instruction-modal-backdrop">
             <section class="instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
               <span class="modal-eyebrow">Sebelum mulai · Ronde ${state.trialIndex + 1}</span>
@@ -644,14 +471,10 @@
               <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai mengurutkan <span aria-hidden="true">→</span></button>
             </section>
           </div>
-        `
-            : ""
-        }
+        ` : ""}
       </section>`;
 
-    document
-      .getElementById("submit-trial")
-      .addEventListener("click", handleTrialSubmit);
+    document.getElementById("submit-trial").addEventListener("click", handleTrialSubmit);
     const startButton = document.getElementById("start-trial-button");
     if (startButton) startButton.addEventListener("click", startTrial);
     attachReorderEvents();
@@ -659,9 +482,7 @@
   }
 
   function renderListView() {
-    const rows = state.currentTasks
-      .map(
-        (task, index) => `
+    const rows = state.currentTasks.map((task, index) => `
       <tr class="task-row draggable-task-row" draggable="true" data-task-id="${task.id}" aria-label="Task ${escapeHtml(task.name)}">
         <td class="priority-col"><span class="rank-badge" aria-label="Prioritas ${index + 1}">${index + 1}</span></td>
         <td>
@@ -673,9 +494,7 @@
         <td>${categoryPill(task.category)}</td>
         <td class="date-cell">${shortDate(task.startDay)}</td>
         <td class="date-cell deadline-cell"><strong>${shortDate(task.dueDay)}</strong></td>
-      </tr>`,
-      )
-      .join("");
+      </tr>`).join("");
 
     return `
       <table class="task-table">
@@ -694,16 +513,12 @@
   }
 
   function renderGanttView() {
-    const days = Array.from(
-      { length: 31 },
-      (_, i) => `<span>${i + 1}</span>`,
-    ).join("");
-    const rows = state.currentTasks
-      .map((task, index) => {
-        const left = ((task.startDay - 1) / 31) * 100;
-        const width = ((task.dueDay - task.startDay + 1) / 31) * 100;
+    const days = Array.from({ length: 31 }, (_, i) => `<span>${i + 1}</span>`).join("");
+    const rows = state.currentTasks.map((task, index) => {
+      const left = ((task.startDay - 1) / 31) * 100;
+      const width = ((task.dueDay - task.startDay + 1) / 31) * 100;
 
-        return `
+      return `
         <div class="gantt-row draggable-task-row" draggable="true" data-task-id="${task.id}" aria-label="Task ${escapeHtml(task.name)}">
           <div class="gantt-task">
             <span class="rank-badge" aria-label="Prioritas ${index + 1}">${index + 1}</span>
@@ -721,8 +536,7 @@
             <div class="gantt-bar ${task.category}" style="left:${left}%;width:${width}%" title="${escapeHtml(task.name)} · ${shortDate(task.startDay)}–${shortDate(task.dueDay)}"></div>
           </div>
         </div>`;
-      })
-      .join("");
+    }).join("");
 
     return `
       <div class="gantt-shell">
@@ -747,36 +561,30 @@
     const rows = app.querySelectorAll(".draggable-task-row");
     let draggedId = null;
 
-    rows.forEach((row) => {
-      row.addEventListener("dragstart", (event) => {
+    rows.forEach(row => {
+      row.addEventListener("dragstart", event => {
         draggedId = row.dataset.taskId;
         row.classList.add("is-dragging");
         if (event.dataTransfer) {
           event.dataTransfer.effectAllowed = "move";
           event.dataTransfer.setData("text/plain", draggedId);
           try {
-            event.dataTransfer.setDragImage(
-              row,
-              40,
-              Math.min(24, row.offsetHeight / 2),
-            );
+            event.dataTransfer.setDragImage(row, 40, Math.min(24, row.offsetHeight / 2));
           } catch (_) {}
         }
       });
 
-      row.addEventListener("dragover", (event) => {
+      row.addEventListener("dragover", event => {
         if (!draggedId || draggedId === row.dataset.taskId) return;
         event.preventDefault();
         if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
-        rows.forEach((other) => other.classList.remove("drag-over"));
+        rows.forEach(other => other.classList.remove("drag-over"));
         row.classList.add("drag-over");
       });
 
-      row.addEventListener("drop", (event) => {
+      row.addEventListener("drop", event => {
         event.preventDefault();
-        const sourceId =
-          draggedId ||
-          (event.dataTransfer && event.dataTransfer.getData("text/plain"));
+        const sourceId = draggedId || (event.dataTransfer && event.dataTransfer.getData("text/plain"));
         const targetId = row.dataset.taskId;
         if (sourceId && targetId && sourceId !== targetId) {
           reorderTask(sourceId, targetId);
@@ -785,20 +593,14 @@
 
       row.addEventListener("dragend", () => {
         draggedId = null;
-        rows.forEach((other) =>
-          other.classList.remove("is-dragging", "drag-over"),
-        );
+        rows.forEach(other => other.classList.remove("is-dragging", "drag-over"));
       });
     });
   }
 
   function reorderTask(sourceId, targetId) {
-    const fromIndex = state.currentTasks.findIndex(
-      (task) => task.id === sourceId,
-    );
-    const toIndex = state.currentTasks.findIndex(
-      (task) => task.id === targetId,
-    );
+    const fromIndex = state.currentTasks.findIndex(task => task.id === sourceId);
+    const toIndex = state.currentTasks.findIndex(task => task.id === targetId);
     if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
     const [movedTask] = state.currentTasks.splice(fromIndex, 1);
     state.currentTasks.splice(toIndex, 0, movedTask);
@@ -811,16 +613,14 @@
 
     if (!state.trialStartedAt) {
       if (error) {
-        error.textContent =
-          "Klik “Mulai mengurutkan” sebelum mengirim jawaban.";
+        error.textContent = "Klik “Mulai mengurutkan” sebelum mengirim jawaban.";
         error.classList.add("visible");
       }
       return;
     }
 
     if (state.currentTasks.length !== TASK_COUNT) {
-      error.textContent =
-        "Urutan tugas belum lengkap. Muat ulang ronde ini atau hubungi peneliti.";
+      error.textContent = "Urutan tugas belum lengkap. Muat ulang ronde ini atau hubungi peneliti.";
       error.classList.add("visible");
       return;
     }
@@ -828,14 +628,9 @@
     button.disabled = true;
     button.textContent = "Menyimpan jawaban…";
     const submittedAt = nowIso();
-    const durationMs = Math.max(
-      0,
-      Math.round(Date.now() - Date.parse(state.trialStartedAt)),
-    );
+    const durationMs = Math.max(0, Math.round(Date.now() - Date.parse(state.trialStartedAt)));
     const expected = expectedTasks(state.currentTasks);
-    const correctRankById = new Map(
-      expected.map((task, index) => [task.id, index + 1]),
-    );
+    const correctRankById = new Map(expected.map((task, index) => [task.id, index + 1]));
     const answers = state.currentTasks.map((task, index) => ({
       task_id: task.id,
       task_name: task.name,
@@ -844,9 +639,9 @@
       due_date: fullDate(task.dueDay),
       selected_rank: index + 1,
       correct_rank: correctRankById.get(task.id),
-      is_correct: index + 1 === correctRankById.get(task.id),
+      is_correct: index + 1 === correctRankById.get(task.id)
     }));
-    const correctCount = answers.filter((answer) => answer.is_correct).length;
+    const correctCount = answers.filter(answer => answer.is_correct).length;
     const trialRow = {
       id: state.currentTrialId,
       session_id: state.sessionId,
@@ -858,16 +653,14 @@
       duration_ms: durationMs,
       correct_count: correctCount,
       total_tasks: TASK_COUNT,
-      accuracy_percent: Number(((correctCount / TASK_COUNT) * 100).toFixed(2)),
+      accuracy_percent: Number((correctCount / TASK_COUNT * 100).toFixed(2)),
       answers,
-      expected_order: expected.map((task) => task.id),
+      expected_order: expected.map(task => task.id)
     };
 
     try {
       if (isCloudMode) {
-        const { error: insertError } = await db
-          .from("trial_results")
-          .insert(trialRow);
+        const { error: insertError } = await db.from("trial_results").insert(trialRow);
         // Jika respons jaringan hilang setelah insert berhasil, retry dengan ID yang sama menghasilkan duplicate key.
         if (insertError && insertError.code !== "23505") throw insertError;
       } else {
@@ -883,14 +676,10 @@
       }
     } catch (err) {
       console.error(err);
-      error.textContent =
-        "Jawaban belum dapat dikonfirmasi tersimpan. Periksa koneksi, lalu tekan tombol simpan lagi. Jawaban Anda tetap tersedia.";
+      error.textContent = "Jawaban belum dapat dikonfirmasi tersimpan. Periksa koneksi, lalu tekan tombol simpan lagi. Jawaban Anda tetap tersedia.";
       error.classList.add("visible");
       button.disabled = false;
-      button.innerHTML =
-        state.trialIndex === 1
-          ? 'Kirim jawaban & selesai <span aria-hidden="true">→</span>'
-          : 'Simpan jawaban & lanjut <span aria-hidden="true">→</span>';
+      button.innerHTML = state.trialIndex === 1 ? 'Kirim jawaban & selesai <span aria-hidden="true">→</span>' : 'Simpan jawaban & lanjut <span aria-hidden="true">→</span>';
     }
   }
 
@@ -905,28 +694,14 @@
           <button class="btn btn-primary" id="continue-trial">Lanjutkan <span aria-hidden="true">→</span></button>
         </div>
       </section>`;
-    document
-      .getElementById("continue-trial")
-      .addEventListener("click", beginTrial);
+    document.getElementById("continue-trial").addEventListener("click", beginTrial);
   }
 
   async function finishSession() {
-    const totalTrialDuration = state.trials.reduce(
-      (sum, trial) => sum + trial.duration_ms,
-      0,
-    );
-    const elapsedSessionDuration = Math.max(
-      0,
-      Date.now() - state.sessionStartMs,
-    );
-    const totalCorrect = state.trials.reduce(
-      (sum, trial) => sum + trial.correct_count,
-      0,
-    );
-    const totalAnswers = state.trials.reduce(
-      (sum, trial) => sum + trial.total_tasks,
-      0,
-    );
+    const totalTrialDuration = state.trials.reduce((sum, trial) => sum + trial.duration_ms, 0);
+    const elapsedSessionDuration = Math.max(0, Date.now() - state.sessionStartMs);
+    const totalCorrect = state.trials.reduce((sum, trial) => sum + trial.correct_count, 0);
+    const totalAnswers = state.trials.reduce((sum, trial) => sum + trial.total_tasks, 0);
     const completionRow = {
       session_id: state.sessionId,
       completed_at: nowIso(),
@@ -934,32 +709,22 @@
       elapsed_session_duration_ms: elapsedSessionDuration,
       overall_correct_count: totalCorrect,
       overall_task_count: totalAnswers,
-      overall_accuracy_percent: Number(
-        ((totalCorrect / totalAnswers) * 100).toFixed(2),
-      ),
-      sequence_plan: state.plan.id,
+      overall_accuracy_percent: Number((totalCorrect / totalAnswers * 100).toFixed(2)),
+      sequence_plan: state.plan.id
     };
 
     state.pendingCompletion = completionRow;
     if (isCloudMode) {
       try {
-        const { error: insertError } = await db
-          .from("session_completions")
-          .insert(completionRow);
+        const { error: insertError } = await db.from("session_completions").insert(completionRow);
         if (insertError && insertError.code !== "23505") {
           console.error(insertError);
-          renderCompletion(
-            false,
-            "Kedua ronde tersimpan, tetapi konfirmasi penyelesaian sesi belum tersimpan. Hubungi peneliti.",
-          );
+          renderCompletion(false, "Kedua ronde tersimpan, tetapi konfirmasi penyelesaian sesi belum tersimpan. Hubungi peneliti.");
           return;
         }
       } catch (err) {
         console.error(err);
-        renderCompletion(
-          false,
-          "Kedua ronde tersimpan, tetapi status penyelesaian belum berhasil dikirim. Hubungi peneliti.",
-        );
+        renderCompletion(false, "Kedua ronde tersimpan, tetapi status penyelesaian belum berhasil dikirim. Hubungi peneliti.");
         return;
       }
     } else {
@@ -976,13 +741,11 @@
           <div class="success-mark">${saved ? "✓" : "!"}</div>
           <span class="eyebrow">${saved ? "Sesi selesai" : "Perlu perhatian"}</span>
           <h2>${saved ? "Terima kasih telah berpartisipasi." : "Sesi hampir selesai."}</h2>
-          <p class="lead">${
-            saved
-              ? isCloudMode
+          <p class="lead">${saved
+            ? (isCloudMode
                 ? "Jawaban Anda sudah direkam. Terima kasih telah meluangkan waktu."
-                : "Terima kasih. Sesi selesai, tetapi mode demo belum mengirim data ke database peneliti."
-              : escapeHtml(warning)
-          }</p>
+                : "Terima kasih. Sesi selesai, tetapi mode demo belum mengirim data ke database peneliti.")
+            : escapeHtml(warning)}</p>
           ${!saved && isCloudMode ? '<button class="btn btn-primary" id="retry-completion">Coba simpan lagi</button>' : ""}
         </div>
       </section>`;
@@ -996,25 +759,19 @@
     button.disabled = true;
     button.textContent = "Mencoba menyimpan…";
     try {
-      const { error } = await db
-        .from("session_completions")
-        .insert(state.pendingCompletion);
+      const { error } = await db.from("session_completions").insert(state.pendingCompletion);
       if (error && error.code !== "23505") throw error;
       renderCompletion(true, "");
     } catch (err) {
       console.error(err);
       button.disabled = false;
       button.textContent = "Coba simpan status selesai";
-      alert(
-        "Status penyelesaian belum dapat dikirim. Data ronde tetap tersimpan; hubungi peneliti sebelum menutup halaman.",
-      );
+      alert("Status penyelesaian belum dapat dikirim. Data ronde tetap tersimpan; hubungi peneliti sebelum menutup halaman.");
     }
   }
 
   function downloadJson(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json;charset=utf-8",
-    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
