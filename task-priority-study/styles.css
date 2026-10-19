@@ -1191,3 +1191,23 @@ select.text-input {
     font-size: 12px;
   }
 }
+
+
+/* ===== Revision 1.1.4: scenario data update + inner Gantt endpoints ===== */
+.gantt-bar::before,
+.gantt-bar::after {
+  width: 15px !important;
+  height: 15px !important;
+  border-width: 2px !important;
+  background: #f4f5f8 !important;
+}
+
+.gantt-bar::before {
+  left: 2px !important;
+  transform: translate(0, -50%) !important;
+}
+
+.gantt-bar::after {
+  right: 2px !important;
+  transform: translate(0, -50%) !important;
+}
