@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.1.0";
+  const APP_VERSION = "1.1.1";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -204,7 +204,7 @@
               <div class="scenario-box">
                 <span class="scenario-label">Scenario</span>
                 <div class="scenario-date"><strong>Jumat, 16 Oktober 2026</strong></div>
-                <p>Anda akan mengurutkan tugas pada dua tampilan: <strong>List View</strong> dan <strong>Gantt Chart</strong>.</p>
+                <p>Dalam studi ini, anggap hari acuannya adalah <strong>Jumat, 16 Oktober 2026</strong>. Tanggal ini hanya untuk simulasi dan tidak mengikuti waktu nyata saat Anda mengerjakan tes.</p>
               </div>
               <p class="mini-note">Instruksi singkat akan muncul sebelum setiap ronde.</p>
             </section>
@@ -409,7 +409,7 @@
           <div>
             <span class="eyebrow">Ronde ${state.trialIndex + 1} dari 2</span>
             <h2>${viewName}</h2>
-            <p class="lead">Urutkan task berdasarkan deadline.</p>
+            <p class="lead">Urutkan task menurut prioritas berdasarkan deadline.</p>
             <div class="trial-progress">
               <span class="progress-segment active"></span>
               <span class="progress-segment ${isSecond ? "active" : ""}"></span>
@@ -423,10 +423,10 @@
         </div>
 
         <div class="scenario-reminder">
-          <span class="scenario-reminder-label">Scenario</span>
+          <span class="scenario-reminder-label">Acuan studi</span>
           <strong>Jumat, 16 Oktober 2026</strong>
           <span class="scenario-reminder-separator">·</span>
-          <span>Deadline terdekat = prioritas tertinggi</span>
+          <span>Tanggal ini hanya acuan simulasi, bukan waktu nyata</span>
         </div>
 
         <div class="error-banner ${errorText ? "visible" : ""}" id="trial-error" role="alert">${escapeHtml(errorText)}</div>
@@ -440,7 +440,7 @@
         </div>
 
         <div class="trial-footer">
-          <div class="trial-footer-note">Posisi teratas = prioritas tertinggi.</div>
+          <div class="trial-footer-note">Posisi teratas = prioritas paling penting menurut Anda.</div>
           <div class="trial-footer-actions">
             <button class="btn btn-primary" id="submit-trial" type="button">${isSecond ? "Kirim jawaban" : "Simpan & lanjut"} <span aria-hidden="true">→</span></button>
           </div>
@@ -453,14 +453,15 @@
               <div class="modal-scenario">
                 <span>SCENARIO</span>
                 <strong>Jumat, 16 Oktober 2026</strong>
+                <small>Tanggal ini hanya acuan simulasi dalam penelitian.</small>
               </div>
-              <h3 id="trial-instruction-title">Urutkan berdasarkan deadline</h3>
-              <p class="modal-main-instruction">Susun 10 tugas dari deadline paling dekat ke paling jauh.</p>
+              <h3 id="trial-instruction-title">Urutkan prioritas task</h3>
+              <p class="modal-main-instruction">Susun 10 tugas dari prioritas paling penting ke paling rendah dengan mempertimbangkan deadline.</p>
               <div class="modal-rule-list">
-                <p><span class="modal-rule-number">1</span><span><strong>Nomor 1</strong> = deadline terdekat.</span></p>
+                <p><span class="modal-rule-number">1</span><span><strong>Nomor 1</strong> = prioritas paling penting menurut Anda.</span></p>
                 <p><span class="modal-rule-number">↕</span><span>Seret seluruh baris untuk mengubah urutan.</span></p>
               </div>
-              <p class="modal-reminder">Fokus pada deadline, bukan kategori atau jenis tugas.</p>
+              <p class="modal-reminder">Skenario hari pada studi ini hanya simulasi. Fokuskan penilaian pada deadline, bukan kategori atau jenis tugas.</p>
               <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai mengurutkan <span aria-hidden="true">→</span></button>
             </section>
           </div>

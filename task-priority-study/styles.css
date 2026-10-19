@@ -1014,3 +1014,30 @@ select.text-input {
     font-size: 16px;
   }
 }
+
+
+/* ===== Revision 1.1.1: clearer scenario wording + thicker Gantt bars ===== */
+.modal-scenario small {
+  color: #6b7285;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.scenario-reminder {
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.gantt-bar {
+  top: 24px;
+  height: 24px;
+  border-radius: 999px;
+}
+
+.timeline-track {
+  min-height: 78px;
+}
+
+.gantt-row {
+  min-height: 78px;
+}
