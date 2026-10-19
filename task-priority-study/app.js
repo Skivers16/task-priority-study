@@ -237,6 +237,26 @@
     });
   }
 
+  function generateParticipantCode() {
+    // 32-character alphabet excludes ambiguous characters such as I, O, 0, and 1.
+    const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+    const randomValues = new Uint8Array(8);
+
+    if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+      window.crypto.getRandomValues(randomValues);
+    } else {
+      for (let i = 0; i < randomValues.length; i += 1) {
+        randomValues[i] = Math.floor(Math.random() * 256);
+      }
+    }
+
+    const suffix = Array.from(randomValues, (value) =>
+      alphabet[value & 31]
+    ).join("");
+
+    return `RSP-${suffix}`;
+  }
+
   function escapeHtml(value) {
     return String(value).replace(
       /[&<>"']/g,
@@ -314,6 +334,7 @@
 
   function renderIntro(errorText = "") {
     stopTimer();
+    const generatedParticipantCode = generateParticipantCode();
     app.innerHTML = `
       <section class="panel">
         <div class="panel-head">
@@ -375,8 +396,8 @@
                   <option value="2026">2026</option>
                 </select>
                 <label class="form-label" for="participant-code">Kode responden</label>
-                <input class="text-input" id="participant-code" name="participant-code" maxlength="40" minlength="3" placeholder="Contoh: RSP-024" autocomplete="off" required>
-                <div class="input-hint">Gunakan kode yang sama jika peneliti meminta Anda mengulang sesi.</div>
+                <input class="text-input" id="participant-code" name="participant-code" value="${escapeHtml(generatedParticipantCode)}" maxlength="40" minlength="3" autocomplete="off" readonly aria-readonly="true" required>
+                <div class="input-hint">Kode ini dibuat otomatis untuk sesi Anda. Anda dapat menyalin kode yang tampil di atas jika perlu menyebutkannya kepada peneliti.</div>
                 <label class="consent">
                   <input id="consent-check" type="checkbox" required>
                   <span>Saya telah membaca penjelasan penelitian dan bersedia berpartisipasi secara sukarela. Saya memahami bahwa nama, program studi, angkatan, kode responden, jawaban, dan waktu pengerjaan akan direkam untuk keperluan penelitian.</span>
