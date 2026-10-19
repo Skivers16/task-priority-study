@@ -1285,3 +1285,71 @@ select.text-input {
     font-size: 12px;
   }
 }
+
+
+/* ===== Revision 1.1.6: clearer drag insertion feedback + more comfortable typography ===== */
+body {
+  letter-spacing: .012em;
+}
+
+h1, h2, h3 {
+  letter-spacing: -.025em;
+}
+
+p,
+label,
+input,
+select,
+button,
+.task-name,
+.task-table td,
+.gantt-task-copy {
+  letter-spacing: .012em;
+}
+
+.task-name {
+  letter-spacing: .018em;
+  line-height: 1.48;
+}
+
+/* A clear insertion line shows exactly where the dragged row will land. */
+.task-row.drop-before td {
+  background: #edf1ff !important;
+  box-shadow: inset 0 4px 0 #425bd7 !important;
+}
+
+.task-row.drop-after td {
+  background: #edf1ff !important;
+  box-shadow: inset 0 -4px 0 #425bd7 !important;
+}
+
+.gantt-row.drop-before .gantt-task,
+.gantt-row.drop-before .timeline-track {
+  background-color: #edf1ff !important;
+  box-shadow: inset 0 5px 0 #425bd7 !important;
+}
+
+.gantt-row.drop-after .gantt-task,
+.gantt-row.drop-after .timeline-track {
+  background-color: #edf1ff !important;
+  box-shadow: inset 0 -5px 0 #425bd7 !important;
+}
+
+.task-row.drag-over td,
+.gantt-row.drag-over .gantt-task,
+.gantt-row.drag-over .timeline-track {
+  transition: background-color .08s ease, box-shadow .08s ease;
+}
+
+.task-row.is-dragging,
+.gantt-row.is-dragging {
+  opacity: .32;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-row td,
+  .gantt-row .gantt-task,
+  .gantt-row .timeline-track {
+    transition: none !important;
+  }
+}

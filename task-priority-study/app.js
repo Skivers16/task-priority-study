@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.1.5";
+  const APP_VERSION = "1.1.6";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -233,9 +233,7 @@
                   <option value="2026">2026</option>
                 </select>
 
-                <label class="form-label" for="participant-code">Kode responden</label>
-                <input class="text-input" id="participant-code" name="participant-code" value="${escapeHtml(generatedParticipantCode)}" maxlength="40" minlength="3" autocomplete="off" readonly aria-readonly="true" required>
-                <div class="input-hint">Kode dibuat otomatis. Catat jika peneliti memintanya.</div>
+                <input type="hidden" id="participant-code" name="participant-code" value="${escapeHtml(generatedParticipantCode)}">
 
                 <label class="consent">
                   <input id="consent-check" type="checkbox" required>
@@ -564,32 +562,42 @@
         if (!draggedId || draggedId === row.dataset.taskId) return;
         event.preventDefault();
         if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
-        rows.forEach(other => other.classList.remove("drag-over"));
-        row.classList.add("drag-over");
+
+        const bounds = row.getBoundingClientRect();
+        const position = event.clientY < bounds.top + bounds.height / 2 ? "before" : "after";
+        rows.forEach(other => other.classList.remove("drag-over", "drop-before", "drop-after"));
+        row.classList.add("drag-over", position === "before" ? "drop-before" : "drop-after");
       });
 
       row.addEventListener("drop", event => {
         event.preventDefault();
         const sourceId = draggedId || (event.dataTransfer && event.dataTransfer.getData("text/plain"));
         const targetId = row.dataset.taskId;
+        const bounds = row.getBoundingClientRect();
+        const position = event.clientY < bounds.top + bounds.height / 2 ? "before" : "after";
         if (sourceId && targetId && sourceId !== targetId) {
-          reorderTask(sourceId, targetId);
+          reorderTask(sourceId, targetId, position);
         }
       });
 
       row.addEventListener("dragend", () => {
         draggedId = null;
-        rows.forEach(other => other.classList.remove("is-dragging", "drag-over"));
+        rows.forEach(other => other.classList.remove("is-dragging", "drag-over", "drop-before", "drop-after"));
       });
     });
   }
 
-  function reorderTask(sourceId, targetId) {
+  function reorderTask(sourceId, targetId, position = "before") {
     const fromIndex = state.currentTasks.findIndex(task => task.id === sourceId);
-    const toIndex = state.currentTasks.findIndex(task => task.id === targetId);
-    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+    if (fromIndex < 0) return;
     const [movedTask] = state.currentTasks.splice(fromIndex, 1);
-    state.currentTasks.splice(toIndex, 0, movedTask);
+    const targetIndex = state.currentTasks.findIndex(task => task.id === targetId);
+    if (targetIndex < 0) {
+      state.currentTasks.splice(fromIndex, 0, movedTask);
+      return;
+    }
+    const insertIndex = targetIndex + (position === "after" ? 1 : 0);
+    state.currentTasks.splice(insertIndex, 0, movedTask);
     renderTrial();
   }
 
