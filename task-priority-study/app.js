@@ -139,7 +139,7 @@
       {
         id: "B06",
         name: "Materi publikasi acara panitia",
-        category: "kepanitaan",
+        category: "kepanitiaan",
         startDay: 11,
         dueDay: 19,
       },
@@ -250,8 +250,9 @@
       }
     }
 
-    const suffix = Array.from(randomValues, (value) =>
-      alphabet[value & 31]
+    const suffix = Array.from(
+      randomValues,
+      (value) => alphabet[value & 31],
     ).join("");
 
     return `RSP-${suffix}`;
