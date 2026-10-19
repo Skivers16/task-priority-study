@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.1.4";
+  const APP_VERSION = "1.1.5";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -14,13 +14,6 @@
   const db = isCloudMode
     ? window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey)
     : null;
-
-  const CATEGORY_LABELS = {
-    akademis: "Akademis",
-    lomba: "Lomba",
-    kepanitiaan: "Kepanitiaan",
-    organisasi: "Organisasi"
-  };
 
   // Dua set tugas menggunakan sepuluh deadline unik yang sama untuk menjaga tingkat kesulitan relatif.
   // Urutan baris sengaja tidak mengikuti urutan deadline.
@@ -156,9 +149,6 @@
   function expectedTasks(tasks) {
     return [...tasks].sort((a, b) => a.dueDay - b.dueDay);
   }
-  function categoryPill(category) {
-    return `<span class="category-pill ${category}">${CATEGORY_LABELS[category]}</span>`;
-  }
   function getLocalStore() {
     try {
       const parsed = JSON.parse(localStorage.getItem("fieldnote-study-demo") || '{"sessions":[],"trials":[],"completions":[]}');
@@ -202,11 +192,15 @@
           <div class="intro-grid">
             <section class="info-card soft">
               <div class="scenario-box">
-                <span class="scenario-label">Scenario</span>
+                <span class="scenario-label">Skenario penelitian</span>
                 <div class="scenario-date"><strong>Jumat, 16 Oktober 2026</strong></div>
-                <p>Dalam studi ini, anggap hari acuannya adalah <strong>Jumat, 16 Oktober 2026</strong>. Tanggal ini hanya untuk simulasi dan tidak mengikuti waktu nyata saat Anda mengerjakan tes.</p>
+                <p>Bayangkan Anda sedang mengelola 10 tugas. Hari ini adalah Jumat, 16 Oktober 2026, dan setiap tugas memiliki deadline. Anda perlu menentukan tugas mana yang harus dikerjakan lebih dahulu.</p>
+                <p class="scenario-simulation-note">Tanggal ini hanya bagian dari simulasi penelitian, bukan tanggal nyata saat Anda membuka website.</p>
               </div>
-              <p class="mini-note">Instruksi singkat akan muncul sebelum setiap ronde.</p>
+              <div class="priority-warning" role="note">
+                <strong>⚠ Penting — baca sebelum mulai</strong>
+                <p>Urutkan tugas dengan mengutamakan deadline. Deadline yang lebih dekat harus berada lebih atas. Jika dua tugas memiliki deadline yang sama, tentukan urutannya menurut pertimbangan Anda.</p>
+              </div>
             </section>
 
             <section class="info-card">
@@ -423,10 +417,10 @@
         </div>
 
         <div class="scenario-reminder">
-          <span class="scenario-reminder-label">Acuan studi</span>
+          <span class="scenario-reminder-label">Skenario</span>
           <strong>Jumat, 16 Oktober 2026</strong>
           <span class="scenario-reminder-separator">·</span>
-          <span>Tanggal ini hanya acuan simulasi, bukan waktu nyata</span>
+          <span>Gunakan deadline sebagai pertimbangan utama</span>
         </div>
 
         <div class="error-banner ${errorText ? "visible" : ""}" id="trial-error" role="alert">${escapeHtml(errorText)}</div>
@@ -455,19 +449,19 @@
         ${showInstructionModal ? `
           <div class="instruction-modal-backdrop">
             <section class="instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
-              <span class="modal-eyebrow">Sebelum mulai · Ronde ${state.trialIndex + 1}</span>
+              <span class="modal-eyebrow">⚠ Penting · Baca sebelum ronde ${state.trialIndex + 1}</span>
               <div class="modal-scenario">
-                <span>SCENARIO</span>
+                <span>SKENARIO</span>
                 <strong>Jumat, 16 Oktober 2026</strong>
-                <small>Tanggal ini hanya acuan simulasi dalam penelitian.</small>
+                <small>Bayangkan ini adalah hari ini dalam simulasi. Tanggalnya tidak mengikuti waktu nyata.</small>
               </div>
-              <h3 id="trial-instruction-title">Urutkan prioritas task</h3>
-              <p class="modal-main-instruction">Susun 10 tugas dari prioritas paling penting ke paling rendah dengan mempertimbangkan deadline.</p>
+              <h3 id="trial-instruction-title">Deadline adalah prioritas utama</h3>
+              <p class="modal-main-instruction">Bayangkan Anda memiliki 10 tugas dan perlu menentukan mana yang harus dikerjakan lebih dahulu.</p>
               <div class="modal-rule-list">
-                <p><span class="modal-rule-number">1</span><span><strong>Nomor 1</strong> = prioritas paling penting menurut Anda.</span></p>
-                <p><span class="modal-rule-number">↕</span><span>Seret seluruh baris untuk mengubah urutan.</span></p>
+                <p><span class="modal-rule-number">1</span><span><strong>Posisi teratas</strong> = tugas dengan deadline paling dekat.</span></p>
+                <p><span class="modal-rule-number">↕</span><span>Seret seluruh baris task untuk mengubah urutan.</span></p>
               </div>
-              <p class="modal-reminder">Skenario hari pada studi ini hanya simulasi. Fokuskan penilaian pada deadline, bukan kategori atau jenis tugas.</p>
+              <p class="modal-reminder">Utamakan deadline, bukan tingkat kesulitan atau ketertarikan pada tugas. Jika deadline sama, pilih urutan menurut pertimbangan Anda.</p>
               <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai mengurutkan <span aria-hidden="true">→</span></button>
             </section>
           </div>
@@ -491,19 +485,17 @@
             <span class="task-name">${escapeHtml(task.name)}</span>
           </div>
         </td>
-        <td>${categoryPill(task.category)}</td>
         <td class="date-cell">${shortDate(task.startDay)}</td>
         <td class="date-cell deadline-cell"><strong>${shortDate(task.dueDay)}</strong></td>
       </tr>`).join("");
 
     return `
       <table class="task-table">
-        <colgroup><col style="width:11%"><col style="width:39%"><col style="width:18%"><col style="width:14%"><col style="width:18%"></colgroup>
+        <colgroup><col style="width:11%"><col style="width:49%"><col style="width:18%"><col style="width:22%"></colgroup>
         <thead>
           <tr>
             <th>Prioritas</th>
             <th>Task</th>
-            <th>Kategori</th>
             <th>Mulai</th>
             <th>Deadline</th>
           </tr>
@@ -526,14 +518,13 @@
               <span class="task-code">${task.id}</span>
               <span class="task-name">${escapeHtml(task.name)}</span>
               <div class="gantt-meta">
-                ${categoryPill(task.category)}
                 <span class="deadline-chip">Deadline ${shortDate(task.dueDay)}</span>
               </div>
             </div>
           </div>
           <div class="timeline-track">
             <span class="timeline-today" aria-hidden="true"></span>
-            <div class="gantt-bar ${task.category}" style="left:${left}%;width:${width}%" title="${escapeHtml(task.name)} · ${shortDate(task.startDay)}–${shortDate(task.dueDay)}"></div>
+            <div class="gantt-bar" style="left:${left}%;width:${width}%" title="${escapeHtml(task.name)} · ${shortDate(task.startDay)}–${shortDate(task.dueDay)}"></div>
           </div>
         </div>`;
     }).join("");
@@ -548,12 +539,7 @@
           </div>
         </div>
         <div class="timeline-rows">${rows}</div>
-        <div class="gantt-bottom-note">
-          <span class="legend-item"><span class="legend-dot akademis"></span>Akademis</span>
-          <span class="legend-item"><span class="legend-dot lomba"></span>Lomba</span>
-          <span class="legend-item"><span class="legend-dot kepanitiaan"></span>Kepanitiaan</span>
-          <span class="legend-item"><span class="legend-dot organisasi"></span>Organisasi</span>
-        </div>
+
       </div>`;
   }
 

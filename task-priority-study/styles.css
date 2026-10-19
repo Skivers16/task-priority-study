@@ -1211,3 +1211,77 @@ select.text-input {
   right: 2px !important;
   transform: translate(0, -50%) !important;
 }
+
+
+/* ===== Revision 1.1.5: story scenario, deadline-first instructions, no category cues ===== */
+.scenario-simulation-note {
+  margin-top: 8px !important;
+  color: #65708a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.priority-warning {
+  margin-top: 18px;
+  padding: 17px 18px;
+  border: 2px solid #f1c86b;
+  border-radius: 15px;
+  background: #fff8e7;
+  color: #654b13;
+}
+
+.priority-warning strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #704e00;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.priority-warning p {
+  margin: 0;
+  color: #66552d;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.modal-eyebrow {
+  color: #a35c00;
+}
+
+.modal-scenario small {
+  display: block;
+  margin-top: 2px;
+  line-height: 1.6;
+}
+
+/* Categories are intentionally not encoded in bar colors. */
+.gantt-bar,
+.gantt-bar.akademis,
+.gantt-bar.lomba,
+.gantt-bar.kepanitiaan,
+.gantt-bar.organisasi {
+  background: #2f9ef4 !important;
+}
+
+/* Figma-style plain rounded bars: remove endpoint circles entirely. */
+.gantt-bar::before,
+.gantt-bar::after {
+  display: none !important;
+  content: none !important;
+}
+
+@media (max-width: 600px) {
+  .priority-warning {
+    margin-top: 14px;
+    padding: 14px;
+  }
+
+  .priority-warning strong {
+    font-size: 13px;
+  }
+
+  .priority-warning p {
+    font-size: 12px;
+  }
+}
