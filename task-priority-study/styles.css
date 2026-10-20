@@ -3006,3 +3006,67 @@ button,
   .view-container.task-column-collapsed .task-table colgroup col:nth-child(1),
   .view-container.task-column-collapsed .task-table colgroup col:nth-child(2) { width:0 !important; }
 }
+
+
+/* Mobile UX v5: List View keeps task, start date, and deadline visible together. */
+@media (max-width: 600px) {
+  /* List View should not use the hide/show task-column behavior. */
+  .view-container:has(.task-table) .mobile-task-toggle { display: none !important; }
+  .view-container:has(.task-table) .view-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .view-container:has(.task-table) .task-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    border-spacing: 0 5px;
+  }
+  .view-container:has(.task-table) .task-table colgroup col:nth-child(1) { width: 42px !important; }
+  .view-container:has(.task-table) .task-table colgroup col:nth-child(2) { width: auto !important; }
+  .view-container:has(.task-table) .task-table colgroup col:nth-child(3) { width: 67px !important; }
+  .view-container:has(.task-table) .task-table colgroup col:nth-child(4) { width: 76px !important; }
+  .view-container:has(.task-table) .task-table th {
+    padding: 0 4px 7px;
+    font-size: 9px;
+    letter-spacing: -.02em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .view-container:has(.task-table) .task-table th:first-child,
+  .view-container:has(.task-table) .task-table td:first-child { padding-left: 5px; }
+  .view-container:has(.task-table) .task-table td {
+    padding: 7px 4px;
+    height: auto;
+    min-height: 58px;
+    font-size: 10px;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+  }
+  .view-container:has(.task-table) .task-table td.date-cell {
+    font-size: 10px;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: normal;
+  }
+  .view-container:has(.task-table) .task-table .task-code { font-size: 9px; margin-bottom: 3px; }
+  .view-container:has(.task-table) .task-table .task-name {
+    font-size: 12px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+  .view-container:has(.task-table) .mobile-move-controls { gap: 4px; margin-top: 5px; }
+  .view-container:has(.task-table) .mobile-move-btn { width: 30px; height: 30px; font-size: 16px; }
+  .view-container:has(.task-table) .task-table thead th:first-child,
+  .view-container:has(.task-table) .task-table tbody td:first-child { left: 0; width: 42px; min-width: 42px; }
+  .view-container:has(.task-table) .task-table thead th:nth-child(2),
+  .view-container:has(.task-table) .task-table tbody td:nth-child(2) {
+    position: static;
+    left: auto;
+    box-shadow: none;
+  }
+}

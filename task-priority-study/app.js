@@ -517,7 +517,7 @@
           </div>
           <div class="view-caption">
             <span class="caption-title">${state.currentView === "list" ? "Daftar task" : "Timeline task"}</span>
-            <button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>
+            ${state.currentView === "gantt" ? '<button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>' : ""}
           </div>
           <div class="view-scroll">${state.currentView === "list" ? renderListView() : renderGanttView()}</div>
         </div>
