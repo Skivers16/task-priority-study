@@ -808,9 +808,9 @@ h3 {
   background-image: repeating-linear-gradient(
     to right,
     transparent 0,
-    transparent calc(100% / 31 - 1px),
-    #e8eaf0 calc(100% / 31 - 1px),
-    #e8eaf0 calc(100% / 31)
+    transparent calc(100% / var(--slot-count, 31) - 1px),
+    #e8eaf0 calc(100% / var(--slot-count, 31) - 1px),
+    #e8eaf0 calc(100% / var(--slot-count, 31))
   );
 }
 .timeline-today {

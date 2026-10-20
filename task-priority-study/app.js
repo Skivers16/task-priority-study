@@ -607,7 +607,7 @@
               <span class="task-name">${escapeHtml(task.name)}</span>
             </div>
           </div>
-          <div class="timeline-track" style="--today-left:${todayLeft}%;">
+          <div class="timeline-track" style="--today-left:${todayLeft}%;--slot-count:${slotCount};">
             <span class="timeline-today" aria-hidden="true"></span>
             <div class="gantt-bar" style="left:${left}%;width:${width}%" title="${escapeHtml(task.name)} · ${shortDate(task.startDay)}–${shortDate(task.dueDay)}"></div>
           </div>
