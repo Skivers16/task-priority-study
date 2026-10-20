@@ -1353,3 +1353,190 @@ button,
     transition: none !important;
   }
 }
+
+
+/* ===== Revision 1.2.0: multi-step onboarding + lighter instructions + personalized experience ===== */
+.landing-head {
+  align-items: flex-start;
+}
+
+.intro-grid-compact {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, .92fr);
+}
+
+.device-recommendation,
+.quick-note {
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: #f8f9ff;
+  border: 1px solid #e3e8ff;
+}
+
+.quick-note {
+  margin-top: 16px;
+  background: #fff;
+}
+
+.device-badge {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: #4e63d9;
+  font: 700 10px var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.device-recommendation h3,
+.quick-note strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #232c45;
+}
+
+.quick-note strong {
+  font-size: 16px;
+}
+
+.quick-note .mini-list {
+  margin-top: 0;
+}
+
+.briefing-points {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.briefing-point {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 0;
+  border-top: 1px solid #e9edf6;
+}
+
+.briefing-point:first-child {
+  border-top: 0;
+}
+
+.briefing-point > span {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: #465de0;
+  font-weight: 800;
+}
+
+.briefing-point strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #27314f;
+  font-size: 14px;
+}
+
+.briefing-point p {
+  margin: 0;
+  color: #66708a;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.briefing-actions {
+  margin-top: 28px;
+}
+
+.trial-highlight-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr);
+  gap: 16px;
+  margin: 0 44px 18px;
+}
+
+.highlight-card {
+  padding: 17px 18px;
+  border-radius: 18px;
+  border: 1px solid #dfe5ff;
+  background: #fafbff;
+}
+
+.highlight-card.primary {
+  background: linear-gradient(120deg, #eef2ff 0%, #f8f9ff 100%);
+  border-color: #cad6ff;
+}
+
+.highlight-card.secondary {
+  background: #fff;
+}
+
+.highlight-label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #5168de;
+  font: 700 10px var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.highlight-card strong {
+  display: block;
+  color: #27314f;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.compact-instruction-modal {
+  width: min(100%, 500px);
+}
+
+.compact-instruction-modal .modal-main-instruction {
+  margin-bottom: 16px;
+}
+
+.compact-rule-list {
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.compact-rule-list p {
+  font-size: 14px;
+}
+
+.motivational-completion h2 {
+  max-width: 760px;
+}
+
+.completion-bonus-note {
+  margin: 8px auto 0;
+  color: #52605f;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 850px) {
+  .trial-highlight-grid {
+    margin-left: 22px;
+    margin-right: 22px;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .highlight-card strong {
+    font-size: 15px;
+  }
+
+  .trial-highlight-grid {
+    margin: 0 16px 16px;
+    gap: 12px;
+  }
+
+  .device-recommendation,
+  .quick-note {
+    padding: 16px;
+  }
+}

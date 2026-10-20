@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.1.6";
+  const APP_VERSION = "1.2.0";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -179,33 +179,38 @@
     const generatedParticipantCode = generateParticipantCode();
     app.innerHTML = `
       <section class="panel">
-        <div class="panel-head">
+        <div class="panel-head landing-head">
           <div>
             <span class="eyebrow">Participant onboarding</span>
             <h1>Tentukan prioritas tugas<br>berdasarkan deadline</h1>
-            <p class="lead">Anda akan menyusun urutan 10 tugas pada dua tampilan: List View dan Gantt Chart.</p>
+            <p class="lead">Anda akan menyusun prioritas 10 tugas pada dua tampilan: <strong>List View</strong> dan <strong>Gantt Chart</strong>.</p>
           </div>
-          ${dateStamp()}
         </div>
+
         <div class="panel-rule"></div>
+
         <div class="intro-body">
-          <div class="intro-grid">
+          <div class="intro-grid intro-grid-compact">
             <section class="info-card soft">
-              <div class="scenario-box">
-                <span class="scenario-label">Skenario penelitian</span>
-                <div class="scenario-date"><strong>Jumat, 16 Oktober 2026</strong></div>
-                <p>Bayangkan Anda sedang mengelola 10 tugas. Hari ini adalah Jumat, 16 Oktober 2026, dan setiap tugas memiliki deadline. Anda perlu menentukan tugas mana yang harus dikerjakan lebih dahulu.</p>
-                <p class="scenario-simulation-note">Tanggal ini hanya bagian dari simulasi penelitian, bukan tanggal nyata saat Anda membuka website.</p>
+              <div class="device-recommendation">
+                <span class="device-badge">Rekomendasi</span>
+                <h3>Disarankan mengerjakan melalui PC atau laptop</h3>
+                <p>Tampilan penelitian ini lebih nyaman digunakan pada layar yang lebih lebar agar proses membaca deadline dan drag-and-drop lebih jelas.</p>
               </div>
-              <div class="priority-warning" role="note">
-                <strong>⚠ Penting — baca sebelum mulai</strong>
-                <p>Urutkan tugas dengan mengutamakan deadline. Deadline yang lebih dekat harus berada lebih atas. Jika dua tugas memiliki deadline yang sama, tentukan urutannya menurut pertimbangan Anda.</p>
+
+              <div class="quick-note">
+                <strong>Yang akan Anda lakukan</strong>
+                <ul class="mini-list">
+                  <li>Mengikuti <strong>2 tahap</strong> pengurutan task.</li>
+                  <li>Menyusun urutan prioritas task dari <strong>1 sampai 10</strong>.</li>
+                  <li>Waktu pengerjaan dan jawaban akan direkam untuk keperluan penelitian.</li>
+                </ul>
               </div>
             </section>
 
             <section class="info-card">
               <h3>Mulai sesi</h3>
-              <p>Isi biodata singkat berikut, lalu mulai eksperimen.</p>
+              <p>Isi biodata singkat berikut, lalu lanjut ke tahap persiapan.</p>
               <form id="start-form">
                 <label class="form-label" for="participant-name">Nama</label>
                 <input class="text-input" id="participant-name" name="participant-name" maxlength="120" minlength="2" placeholder="Contoh: Arief Wicaksono" autocomplete="name" required>
@@ -242,7 +247,7 @@
 
                 <div class="form-actions">
                   <div class="status-message" id="start-error" role="alert">${escapeHtml(errorText)}</div>
-                  <button class="btn btn-primary" type="submit" id="start-button">Mulai eksperimen <span aria-hidden="true">→</span></button>
+                  <button class="btn btn-primary" type="submit" id="start-button">Lanjutkan <span aria-hidden="true">→</span></button>
                 </div>
               </form>
             </section>
@@ -349,7 +354,7 @@
       state.trials = [];
       state.sessionStartedAt = startedAt;
       state.sessionStartMs = Date.now();
-      beginTrial();
+      renderScenarioBriefing();
     } catch (err) {
       console.error(err);
       error.textContent =
@@ -357,6 +362,72 @@
       button.disabled = false;
       button.innerHTML = 'Mulai eksperimen <span aria-hidden="true">→</span>';
     }
+  }
+
+  function renderScenarioBriefing() {
+    stopTimer();
+    const stageNumber = state.trialIndex + 1;
+    const upcomingView = state.plan.order[state.trialIndex];
+    const upcomingViewName = upcomingView === "list" ? "List View" : "Gantt Chart";
+
+    app.innerHTML = `
+      <section class="panel">
+        <div class="panel-head landing-head">
+          <div>
+            <span class="eyebrow">Tahap persiapan</span>
+            <h2>Halo, ${escapeHtml(state.participantName)} 👋</h2>
+            <p class="lead">Sebelum memulai tahap ${stageNumber}, baca skenario singkat berikut agar Anda lebih siap mengerjakan tugas.</p>
+          </div>
+          ${dateStamp()}
+        </div>
+
+        <div class="panel-rule"></div>
+
+        <div class="intro-body">
+          <div class="intro-grid intro-grid-compact">
+            <section class="info-card soft">
+              <div class="scenario-box scenario-story-box">
+                <span class="scenario-label">Scenario tahap ${stageNumber}</span>
+                <div class="scenario-date"><strong>Jumat, 16 Oktober 2026</strong></div>
+                <p>Bayangkan hari ini adalah <strong>Jumat, 16 Oktober 2026</strong>. Anda sedang mengelola beberapa tugas yang harus diselesaikan dalam waktu dekat. Setiap tugas memiliki deadline yang berbeda, dan Anda perlu menentukan urutan prioritas pengerjaannya.</p>
+                <p class="scenario-simulation-note">Tanggal ini adalah bagian dari simulasi penelitian, bukan tanggal nyata saat Anda membuka website.</p>
+              </div>
+
+              <div class="priority-warning" role="note">
+                <strong>Instruksi inti</strong>
+                <p>Utamakan deadline saat menyusun prioritas. Letakkan task dengan deadline paling dekat di urutan atas. Jika ada deadline yang sama, Anda boleh menentukan urutannya menurut pertimbangan Anda.</p>
+              </div>
+            </section>
+
+            <section class="info-card">
+              <h3>Anda akan masuk ke tahap ${stageNumber}</h3>
+              <p>Tampilan yang akan Anda gunakan pada tahap ini adalah <strong>${upcomingViewName}</strong>.</p>
+
+              <div class="briefing-points">
+                <div class="briefing-point">
+                  <span>1</span>
+                  <div>
+                    <strong>Fokus pada deadline</strong>
+                    <p>Gunakan deadline sebagai dasar utama untuk menentukan prioritas.</p>
+                  </div>
+                </div>
+                <div class="briefing-point">
+                  <span>2</span>
+                  <div>
+                    <strong>Susun urutan 1–10</strong>
+                    <p>Urutan paling atas menunjukkan prioritas task yang paling penting untuk dikerjakan lebih dulu.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions briefing-actions">
+                <button class="btn btn-primary" id="briefing-continue">Masuk ke tahap ${stageNumber} <span aria-hidden="true">→</span></button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>`;
+    document.getElementById("briefing-continue").addEventListener("click", beginTrial);
   }
 
   function beginTrial() {
@@ -392,6 +463,7 @@
   function renderTrial(errorText = "") {
     const viewName = state.currentView === "list" ? "List View" : "Gantt Chart";
     const viewIcon = state.currentView === "list" ? "▤" : "▥";
+    const stageNumber = state.trialIndex + 1;
     const isSecond = state.trialIndex === 1;
     const showInstructionModal = !state.trialStartedAt;
 
@@ -399,13 +471,13 @@
       <section class="panel">
         <div class="panel-head study-head">
           <div>
-            <span class="eyebrow">Ronde ${state.trialIndex + 1} dari 2</span>
+            <span class="eyebrow">Tahap ${stageNumber} dari 2 · Halo, ${escapeHtml(state.participantName)}</span>
             <h2>${viewName}</h2>
-            <p class="lead">Urutkan task menurut prioritas berdasarkan deadline.</p>
+            <p class="lead">Saat ini Anda sedang menyusun prioritas task berdasarkan deadline.</p>
             <div class="trial-progress">
               <span class="progress-segment active"></span>
               <span class="progress-segment ${isSecond ? "active" : ""}"></span>
-              <span class="progress-caption">RONDE ${state.trialIndex + 1} / 2</span>
+              <span class="progress-caption">TAHAP ${stageNumber} / 2</span>
             </div>
           </div>
           <div class="trial-meta">
@@ -414,11 +486,15 @@
           </div>
         </div>
 
-        <div class="scenario-reminder">
-          <span class="scenario-reminder-label">Skenario</span>
-          <strong>Jumat, 16 Oktober 2026</strong>
-          <span class="scenario-reminder-separator">·</span>
-          <span>Gunakan deadline sebagai pertimbangan utama</span>
+        <div class="trial-highlight-grid">
+          <div class="highlight-card primary">
+            <span class="highlight-label">Fokus utama</span>
+            <strong>Urutkan prioritas task dari 1–10 berdasarkan deadline menurut Anda</strong>
+          </div>
+          <div class="highlight-card secondary">
+            <span class="highlight-label">Waktu hari ini</span>
+            <strong>Jumat, 16 Oktober 2026</strong>
+          </div>
         </div>
 
         <div class="error-banner ${errorText ? "visible" : ""}" id="trial-error" role="alert">${escapeHtml(errorText)}</div>
@@ -428,7 +504,7 @@
             <span class="drag-instruction-icon" aria-hidden="true">↕</span>
             <span class="drag-instruction-copy">
               <strong>Cara mengubah urutan</strong>
-              <span>Klik dan tahan baris task mana pun — termasuk area timeline — lalu seret ke posisi yang diinginkan dan lepaskan.</span>
+              <span>Klik dan tahan baris task, lalu seret ke posisi yang diinginkan.</span>
             </span>
           </div>
           <div class="view-caption">
@@ -438,7 +514,7 @@
         </div>
 
         <div class="trial-footer">
-          <div class="trial-footer-note">Posisi teratas = prioritas paling penting menurut Anda.</div>
+          <div class="trial-footer-note">Posisi teratas = prioritas yang Anda pilih untuk dikerjakan lebih dulu.</div>
           <div class="trial-footer-actions">
             <button class="btn btn-primary" id="submit-trial" type="button">${isSecond ? "Kirim jawaban" : "Simpan & lanjut"} <span aria-hidden="true">→</span></button>
           </div>
@@ -446,21 +522,15 @@
 
         ${showInstructionModal ? `
           <div class="instruction-modal-backdrop">
-            <section class="instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
-              <span class="modal-eyebrow">⚠ Penting · Baca sebelum ronde ${state.trialIndex + 1}</span>
-              <div class="modal-scenario">
-                <span>SKENARIO</span>
-                <strong>Jumat, 16 Oktober 2026</strong>
-                <small>Bayangkan ini adalah hari ini dalam simulasi. Tanggalnya tidak mengikuti waktu nyata.</small>
+            <section class="instruction-modal compact-instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
+              <span class="modal-eyebrow">Tahap ${stageNumber}</span>
+              <h3 id="trial-instruction-title">Siap mulai, ${escapeHtml(state.participantName)}?</h3>
+              <p class="modal-main-instruction">Susun task dari prioritas paling atas sampai paling bawah dengan mengutamakan deadline.</p>
+              <div class="modal-rule-list compact-rule-list">
+                <p><span class="modal-rule-number">1</span><span>Urutan <strong>1</strong> = task yang paling diprioritaskan.</span></p>
+                <p><span class="modal-rule-number">⏰</span><span>Gunakan <strong>deadline</strong> sebagai pertimbangan utama.</span></p>
               </div>
-              <h3 id="trial-instruction-title">Deadline adalah prioritas utama</h3>
-              <p class="modal-main-instruction">Bayangkan Anda memiliki 10 tugas dan perlu menentukan mana yang harus dikerjakan lebih dahulu.</p>
-              <div class="modal-rule-list">
-                <p><span class="modal-rule-number">1</span><span><strong>Posisi teratas</strong> = tugas dengan deadline paling dekat.</span></p>
-                <p><span class="modal-rule-number">↕</span><span>Seret seluruh baris task untuk mengubah urutan.</span></p>
-              </div>
-              <p class="modal-reminder">Utamakan deadline, bukan tingkat kesulitan atau ketertarikan pada tugas. Jika deadline sama, pilih urutan menurut pertimbangan Anda.</p>
-              <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai mengurutkan <span aria-hidden="true">→</span></button>
+              <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai tahap ${stageNumber} <span aria-hidden="true">→</span></button>
             </section>
           </div>
         ` : ""}
@@ -680,15 +750,15 @@
   function renderIntermission() {
     app.innerHTML = `
       <section class="panel">
-        <div class="completion simple-completion">
+        <div class="completion simple-completion motivational-completion">
           <div class="success-mark">✓</div>
-          <span class="eyebrow">Ronde pertama selesai</span>
-          <h2>Lanjut ke tampilan berikutnya?</h2>
-          <p class="lead">Instruksi singkat akan muncul sebelum Anda mulai lagi.</p>
-          <button class="btn btn-primary" id="continue-trial">Lanjutkan <span aria-hidden="true">→</span></button>
+          <span class="eyebrow">Tahap pertama selesai</span>
+          <h2>Bagus, ${escapeHtml(state.participantName)}! Anda sudah menyelesaikan tahap pertama.</h2>
+          <p class="lead">Satu tahap lagi untuk membantu penelitian ini. Tetap semangat — Anda tinggal melanjutkan ke tampilan berikutnya.</p>
+          <button class="btn btn-primary" id="continue-trial">Lanjut ke tahap 2 <span aria-hidden="true">→</span></button>
         </div>
       </section>`;
-    document.getElementById("continue-trial").addEventListener("click", beginTrial);
+    document.getElementById("continue-trial").addEventListener("click", renderScenarioBriefing);
   }
 
   async function finishSession() {
@@ -731,15 +801,16 @@
     stopTimer();
     app.innerHTML = `
       <section class="panel">
-        <div class="completion simple-completion">
+        <div class="completion simple-completion motivational-completion">
           <div class="success-mark">${saved ? "✓" : "!"}</div>
           <span class="eyebrow">${saved ? "Sesi selesai" : "Perlu perhatian"}</span>
-          <h2>${saved ? "Terima kasih telah berpartisipasi." : "Sesi hampir selesai."}</h2>
+          <h2>${saved ? `Terima kasih, ${escapeHtml(state.participantName)}!` : "Sesi hampir selesai."}</h2>
           <p class="lead">${saved
             ? (isCloudMode
-                ? "Jawaban Anda sudah direkam. Terima kasih telah meluangkan waktu."
+                ? "Jawaban Anda sudah direkam dengan baik. Terima kasih sudah berpartisipasi dalam penelitian ini."
                 : "Terima kasih. Sesi selesai, tetapi mode demo belum mengirim data ke database peneliti.")
             : escapeHtml(warning)}</p>
+          ${saved ? '<p class="completion-bonus-note">Akan ada hadiah bagi responden yang beruntung ✨</p>' : ""}
           ${!saved && isCloudMode ? '<button class="btn btn-primary" id="retry-completion">Coba simpan lagi</button>' : ""}
         </div>
       </section>`;
