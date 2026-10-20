@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "1.2.0";
+  const APP_VERSION = "1.2.2";
   const REFERENCE_DATE = "2026-10-16";
   const TASK_COUNT = 10;
   const config = window.STUDY_CONFIG || {};
@@ -392,42 +392,50 @@
                 <p>Bayangkan hari ini adalah <strong>Jumat, 16 Oktober 2026</strong>. Anda sedang mengelola beberapa tugas yang harus diselesaikan dalam waktu dekat. Setiap tugas memiliki deadline yang berbeda, dan Anda perlu menentukan urutan prioritas pengerjaannya.</p>
                 <p class="scenario-simulation-note">Tanggal ini adalah bagian dari simulasi penelitian, bukan tanggal nyata saat Anda membuka website.</p>
               </div>
-
-              <div class="priority-warning" role="note">
-                <strong>Instruksi inti</strong>
-                <p>Utamakan deadline saat menyusun prioritas. Letakkan task dengan deadline paling dekat di urutan atas. Jika ada deadline yang sama, Anda boleh menentukan urutannya menurut pertimbangan Anda.</p>
-              </div>
             </section>
 
-            <section class="info-card">
-              <h3>Anda akan masuk ke tahap ${stageNumber}</h3>
-              <p>Tampilan yang akan Anda gunakan pada tahap ini adalah <strong>${upcomingViewName}</strong>.</p>
+            <section class="info-card briefing-instruction-card">
+              <h3>Instruksi tahap ${stageNumber}</h3>
+              <p class="briefing-view-copy">Pada tahap ini Anda akan menggunakan <strong>${upcomingViewName}</strong>.</p>
 
-              <div class="briefing-points">
-                <div class="briefing-point">
-                  <span>1</span>
-                  <div>
+              <div class="briefing-point-list">
+                <label class="briefing-check-item">
+                  <input type="checkbox" class="briefing-check-input" id="briefing-check-1">
+                  <span class="briefing-check-box" aria-hidden="true"></span>
+                  <span class="briefing-check-text">
                     <strong>Fokus pada deadline</strong>
-                    <p>Gunakan deadline sebagai dasar utama untuk menentukan prioritas.</p>
-                  </div>
-                </div>
-                <div class="briefing-point">
-                  <span>2</span>
-                  <div>
+                    <small>Gunakan deadline sebagai dasar utama untuk menentukan prioritas task.</small>
+                  </span>
+                </label>
+
+                <label class="briefing-check-item">
+                  <input type="checkbox" class="briefing-check-input" id="briefing-check-2">
+                  <span class="briefing-check-box" aria-hidden="true"></span>
+                  <span class="briefing-check-text">
                     <strong>Susun urutan 1–10</strong>
-                    <p>Urutan paling atas menunjukkan prioritas task yang paling penting untuk dikerjakan lebih dulu.</p>
-                  </div>
-                </div>
+                    <small>Urutan paling atas menunjukkan prioritas task yang paling penting untuk dikerjakan lebih dulu.</small>
+                  </span>
+                </label>
               </div>
 
+              <p class="briefing-note">Centang kedua poin di atas setelah Anda membaca dan memahaminya.</p>
+
               <div class="form-actions briefing-actions">
-                <button class="btn btn-primary" id="briefing-continue">Masuk ke tahap ${stageNumber} <span aria-hidden="true">→</span></button>
+                <button class="btn btn-primary" id="briefing-continue" type="button" disabled>Masuk ke tahap ${stageNumber} <span aria-hidden="true">→</span></button>
               </div>
             </section>
           </div>
         </div>
       </section>`;
-    document.getElementById("briefing-continue").addEventListener("click", beginTrial);
+
+    const checks = Array.from(document.querySelectorAll(".briefing-check-input"));
+    const continueButton = document.getElementById("briefing-continue");
+    const syncBriefingButton = () => {
+      continueButton.disabled = !checks.every(input => input.checked);
+    };
+    checks.forEach(input => input.addEventListener("change", syncBriefingButton));
+    syncBriefingButton();
+    continueButton.addEventListener("click", beginTrial);
   }
 
   function beginTrial() {
@@ -522,13 +530,13 @@
 
         ${showInstructionModal ? `
           <div class="instruction-modal-backdrop">
-            <section class="instruction-modal compact-instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
+            <section class="instruction-modal compact-instruction-modal lighter-instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
               <span class="modal-eyebrow">Tahap ${stageNumber}</span>
-              <h3 id="trial-instruction-title">Siap mulai, ${escapeHtml(state.participantName)}?</h3>
-              <p class="modal-main-instruction">Susun task dari prioritas paling atas sampai paling bawah dengan mengutamakan deadline.</p>
+              <h3 id="trial-instruction-title">Sebelum mulai, ${escapeHtml(state.participantName)}</h3>
+              <p class="modal-main-instruction">Utamakan deadline saat menyusun urutan task.</p>
               <div class="modal-rule-list compact-rule-list">
-                <p><span class="modal-rule-number">1</span><span>Urutan <strong>1</strong> = task yang paling diprioritaskan.</span></p>
-                <p><span class="modal-rule-number">⏰</span><span>Gunakan <strong>deadline</strong> sebagai pertimbangan utama.</span></p>
+                <p><span class="modal-rule-number">1</span><span>Urutan <strong>1</strong> = prioritas paling atas.</span></p>
+                <p><span class="modal-rule-number">↕</span><span>Seret baris task untuk mengubah urutan.</span></p>
               </div>
               <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai tahap ${stageNumber} <span aria-hidden="true">→</span></button>
             </section>
@@ -573,10 +581,22 @@
   }
 
   function renderGanttView() {
-    const days = Array.from({ length: 31 }, (_, i) => `<span>${i + 1}</span>`).join("");
+    const todayDay = 16;
+    const earliestStart = Math.min(...state.currentTasks.map(task => task.startDay));
+    const latestDue = Math.max(...state.currentTasks.map(task => task.dueDay));
+    const rangeStart = Math.max(1, earliestStart - 1);
+    const rangeEnd = Math.min(31, latestDue + 1);
+    const slotCount = rangeEnd - rangeStart + 1;
+    const todayLeft = ((todayDay - rangeStart + 0.5) / slotCount) * 100;
+
+    const days = Array.from({ length: slotCount }, (_, i) => {
+      const day = rangeStart + i;
+      return `<span>${day}</span>`;
+    }).join("");
+
     const rows = state.currentTasks.map((task, index) => {
-      const left = ((task.startDay - 1) / 31) * 100;
-      const width = ((task.dueDay - task.startDay + 1) / 31) * 100;
+      const left = ((task.startDay - rangeStart) / slotCount) * 100;
+      const width = ((task.dueDay - task.startDay + 1) / slotCount) * 100;
 
       return `
         <div class="gantt-row draggable-task-row" draggable="true" data-task-id="${task.id}" aria-label="Task ${escapeHtml(task.name)}">
@@ -585,12 +605,9 @@
             <div class="gantt-task-copy">
               <span class="task-code">${task.id}</span>
               <span class="task-name">${escapeHtml(task.name)}</span>
-              <div class="gantt-meta">
-                <span class="deadline-chip">Deadline ${shortDate(task.dueDay)}</span>
-              </div>
             </div>
           </div>
-          <div class="timeline-track">
+          <div class="timeline-track" style="--today-left:${todayLeft}%;">
             <span class="timeline-today" aria-hidden="true"></span>
             <div class="gantt-bar" style="left:${left}%;width:${width}%" title="${escapeHtml(task.name)} · ${shortDate(task.startDay)}–${shortDate(task.dueDay)}"></div>
           </div>
@@ -601,13 +618,12 @@
       <div class="gantt-shell">
         <div class="gantt-header">
           <div class="gantt-label-head">Prioritas / task</div>
-          <div class="timeline-header">
+          <div class="timeline-header" style="--today-left:${todayLeft}%;">
             <div class="month-label">OKTOBER 2026</div>
-            <div class="day-grid">${days}</div>
+            <div class="day-grid" style="grid-template-columns: repeat(${slotCount}, minmax(0, 1fr));">${days}</div>
           </div>
         </div>
         <div class="timeline-rows">${rows}</div>
-
       </div>`;
   }
 

@@ -1540,3 +1540,174 @@ button,
     padding: 16px;
   }
 }
+
+
+/* ===== Revision 1.2.1: briefing checkboxes + cleaner Gantt timeline ===== */
+.briefing-instruction-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.briefing-view-copy {
+  margin-bottom: 16px;
+}
+
+.briefing-point-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.briefing-check-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px 22px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 0;
+  border-top: 1px solid #e9edf6;
+  cursor: pointer;
+}
+
+.briefing-check-item:first-child {
+  border-top: 0;
+}
+
+.briefing-check-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.briefing-check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #cdd6f8;
+  border-radius: 7px;
+  background: #fff;
+  box-sizing: border-box;
+  transition: all .16s ease;
+  margin-top: 2px;
+}
+
+.briefing-check-box::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transform-origin: center;
+  margin: 2px 0 0 6px;
+  transition: transform .14s ease;
+}
+
+.briefing-check-input:checked + .briefing-check-box {
+  background: #4b62df;
+  border-color: #4b62df;
+  box-shadow: 0 6px 16px rgba(75,98,223,.18);
+}
+
+.briefing-check-input:checked + .briefing-check-box::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.briefing-check-text strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #27314f;
+  font-size: 14px;
+}
+
+.briefing-check-text small {
+  display: block;
+  color: #66708a;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.briefing-note {
+  margin-top: 10px;
+  color: #70798f;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.briefing-actions .btn[disabled] {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+.lighter-instruction-modal {
+  width: min(100%, 470px);
+}
+
+.lighter-instruction-modal .modal-main-instruction {
+  margin-bottom: 12px;
+}
+
+.lighter-instruction-modal .compact-rule-list {
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.lighter-instruction-modal .compact-rule-list p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.timeline-header {
+  position: relative;
+}
+
+.timeline-header::after {
+  left: var(--today-left, 50%) !important;
+  transform: translateX(-50%);
+}
+
+.timeline-track .timeline-today {
+  left: var(--today-left, 50%) !important;
+  transform: translateX(-50%);
+}
+
+.day-grid {
+  border-top: 1px solid #eceef3;
+}
+
+.day-grid span {
+  padding: 8px 0;
+  color: #505a73;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.month-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #56607a;
+}
+
+.gantt-task .task-name {
+  max-width: 235px;
+}
+
+.gantt-task .task-code {
+  margin-bottom: 4px;
+}
+
+.gantt-meta,
+.deadline-chip {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .briefing-check-item {
+    grid-template-columns: 20px 20px 1fr;
+    gap: 10px;
+  }
+
+}
