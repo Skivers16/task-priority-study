@@ -396,7 +396,7 @@
 
             <section class="info-card briefing-instruction-card">
               <h3>Instruksi tahap ${stageNumber}</h3>
-              <p class="briefing-view-copy">Pada tahap ini Anda akan menggunakan <strong>${upcomingViewName}</strong>.</p>
+              <div class="briefing-view-focus"><span class="briefing-view-kicker">TAMPILAN YANG AKAN DIGUNAKAN</span><strong>${upcomingViewName}</strong><span>${upcomingView === "gantt" ? "Perhatikan posisi dan panjang bar untuk membaca rentang tanggal serta deadline." : "Perhatikan kolom deadline untuk membandingkan tanggal setiap task."}</span></div>
 
               <div class="briefing-point-list">
                 <label class="briefing-check-item">
@@ -517,7 +517,7 @@
           </div>
           <div class="view-caption">
             <span class="caption-title">${state.currentView === "list" ? "Daftar task" : "Timeline task"}</span>
-            ${state.currentView === "gantt" ? '<button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>' : ''}
+            <button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>
           </div>
           <div class="view-scroll">${state.currentView === "list" ? renderListView() : renderGanttView()}</div>
         </div>
