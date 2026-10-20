@@ -517,6 +517,7 @@
           </div>
           <div class="view-caption">
             <span class="caption-title">${state.currentView === "list" ? "Daftar task" : "Timeline task"}</span>
+            ${state.currentView === "gantt" ? '<button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>' : ''}
           </div>
           <div class="view-scroll">${state.currentView === "list" ? renderListView() : renderGanttView()}</div>
         </div>
@@ -533,7 +534,12 @@
             <section class="instruction-modal compact-instruction-modal lighter-instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
               <span class="modal-eyebrow">Tahap ${stageNumber}</span>
               <h3 id="trial-instruction-title">Sebelum mulai, ${escapeHtml(state.participantName)}</h3>
-              <p class="modal-main-instruction">Utamakan deadline saat menyusun urutan task.</p>
+              <div class="instruction-view-focus">
+                <span class="instruction-view-kicker">TAMPILAN YANG AKAN DIKERJAKAN</span>
+                <strong>${viewName}</strong>
+                <span>${state.currentView === "gantt" ? "Perhatikan posisi dan panjang bar untuk membaca rentang tanggal serta deadline." : "Perhatikan kolom deadline untuk membandingkan tanggal setiap task."}</span>
+              </div>
+              <p class="modal-main-instruction">Susun prioritas berdasarkan deadline, dari yang paling perlu dikerjakan lebih dulu.</p>
               <div class="modal-rule-list compact-rule-list">
                 <p><span class="modal-rule-number">1</span><span>Urutan <strong>1</strong> = prioritas paling atas.</span></p>
                 <p><span class="modal-rule-number">↕</span><span>Seret baris task untuk mengubah urutan.</span></p>
@@ -547,6 +553,18 @@
     document.getElementById("submit-trial").addEventListener("click", handleTrialSubmit);
     const startButton = document.getElementById("start-trial-button");
     if (startButton) startButton.addEventListener("click", startTrial);
+    const taskToggle = document.getElementById("mobile-task-toggle");
+    if (taskToggle) {
+      taskToggle.addEventListener("click", () => {
+        const viewContainer = document.querySelector(".view-container");
+        if (!viewContainer) return;
+        const collapsed = viewContainer.classList.toggle("task-column-collapsed");
+        taskToggle.setAttribute("aria-expanded", String(!collapsed));
+        taskToggle.innerHTML = collapsed
+          ? 'Tampilkan daftar task <span aria-hidden="true">→</span>'
+          : 'Sembunyikan daftar task <span aria-hidden="true">←</span>';
+      });
+    }
     attachReorderEvents();
     attachMobileMoveControls();
     updateTimer();
@@ -709,7 +727,36 @@
     }
     const insertIndex = targetIndex + (position === "after" ? 1 : 0);
     state.currentTasks.splice(insertIndex, 0, movedTask);
+
+    // Preserve the respondent's current viewport when the task order rerenders.
+    // This prevents the horizontal timeline from snapping back to the left edge.
+    const scrollContainer = app.querySelector(".view-scroll");
+    const savedScrollLeft = scrollContainer ? scrollContainer.scrollLeft : 0;
+    const savedScrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
+    const savedPageX = window.scrollX;
+    const savedPageY = window.scrollY;
+    const savedCollapsed = app.querySelector(".view-container")?.classList.contains("task-column-collapsed") || false;
+
     renderTrial();
+
+    const restoreViewport = () => {
+      const nextScrollContainer = app.querySelector(".view-scroll");
+      const nextViewContainer = app.querySelector(".view-container");
+      if (nextViewContainer && savedCollapsed) {
+        nextViewContainer.classList.add("task-column-collapsed");
+        const toggle = app.querySelector("#mobile-task-toggle");
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.innerHTML = 'Tampilkan daftar task <span aria-hidden="true">→</span>';
+        }
+      }
+      if (nextScrollContainer) {
+        nextScrollContainer.scrollLeft = savedScrollLeft;
+        nextScrollContainer.scrollTop = savedScrollTop;
+      }
+      window.scrollTo(savedPageX, savedPageY);
+    };
+    requestAnimationFrame(restoreViewport);
   }
 
   async function handleTrialSubmit() {
