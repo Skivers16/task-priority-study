@@ -2554,7 +2554,7 @@ button,
 .briefing-check-item {
   position: relative;
   display: grid;
-  grid-template-columns: 22px 22px 1fr;
+  grid-template-columns: 22px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
   padding: 14px 0;
@@ -2604,6 +2604,20 @@ button,
 
 .briefing-check-input:checked + .briefing-check-box::after {
   transform: rotate(45deg) scale(1);
+}
+
+.briefing-check-text {
+  min-width: 0;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.briefing-check-text strong,
+.briefing-check-text small {
+  width: 100%;
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .briefing-check-text strong {
