@@ -2815,12 +2815,20 @@ button,
     border-radius: 10px;
   }
 
-  /* Keep the timeline readable; swipe horizontally rather than compressing dates. */
-  .gantt-shell { min-width: 920px; }
-  .task-table { min-width: 690px; }
-  .task-table th { padding: 0 9px 8px; font-size: 10px; }
-  .task-table td { padding: 9px; height: 58px; font-size: 12px; }
-  .task-name { font-size: 13px; overflow-wrap: anywhere; }
+  /* Keep the task column compact while preserving enough width for the timeline. */
+  .gantt-shell { min-width: 760px; }
+  .gantt-header, .gantt-row { grid-template-columns: 210px minmax(550px, 1fr); }
+  .gantt-task { gap: 7px; padding: 8px 9px; }
+  .gantt-task .task-name { max-width: 142px; font-size: 12px; line-height: 1.35; }
+  .gantt-task .task-code { font-size: 10px; }
+  .task-table { min-width: 600px; table-layout: fixed; }
+  .task-table colgroup col:nth-child(1) { width: 64px !important; }
+  .task-table colgroup col:nth-child(2) { width: 210px !important; }
+  .task-table colgroup col:nth-child(3) { width: 105px !important; }
+  .task-table colgroup col:nth-child(4) { width: 125px !important; }
+  .task-table th { padding: 0 8px 8px; font-size: 10px; }
+  .task-table td { padding: 8px; height: 58px; font-size: 12px; }
+  .task-table .task-name { font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
   .task-copy, .gantt-task-copy { min-width: 0; }
 
   /* Native HTML drag-and-drop is unreliable on touch screens, so provide accessible arrows. */
@@ -2934,12 +2942,14 @@ button,
     left: 0;
     z-index: 6;
     background: #f8f9fc;
+    width: 64px;
+    min-width: 64px;
   }
 
   .task-table thead th:nth-child(2),
   .task-table tbody td:nth-child(2) {
     position: sticky;
-    left: 76px;
+    left: 64px;
     z-index: 5;
     background: #fff;
     box-shadow: 2px 0 0 #e5e8f0;
