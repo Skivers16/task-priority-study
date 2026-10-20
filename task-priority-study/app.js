@@ -548,6 +548,7 @@
     const startButton = document.getElementById("start-trial-button");
     if (startButton) startButton.addEventListener("click", startTrial);
     attachReorderEvents();
+    attachMobileMoveControls();
     updateTimer();
   }
 
@@ -559,6 +560,10 @@
           <div class="task-copy">
             <span class="task-code">${task.id}</span>
             <span class="task-name">${escapeHtml(task.name)}</span>
+            <span class="mobile-move-controls" aria-label="Ubah urutan ${escapeHtml(task.name)}">
+              <button type="button" class="mobile-move-btn mobile-move-up" data-task-id="${task.id}" aria-label="Naikkan task ${escapeHtml(task.name)}" ${index === 0 ? "disabled" : ""}>↑</button>
+              <button type="button" class="mobile-move-btn mobile-move-down" data-task-id="${task.id}" aria-label="Turunkan task ${escapeHtml(task.name)}" ${index === state.currentTasks.length - 1 ? "disabled" : ""}>↓</button>
+            </span>
           </div>
         </td>
         <td class="date-cell">${shortDate(task.startDay)}</td>
@@ -605,6 +610,10 @@
             <div class="gantt-task-copy">
               <span class="task-code">${task.id}</span>
               <span class="task-name">${escapeHtml(task.name)}</span>
+              <span class="mobile-move-controls" aria-label="Ubah urutan ${escapeHtml(task.name)}">
+                <button type="button" class="mobile-move-btn mobile-move-up" data-task-id="${task.id}" aria-label="Naikkan task ${escapeHtml(task.name)}" ${index === 0 ? "disabled" : ""}>↑</button>
+                <button type="button" class="mobile-move-btn mobile-move-down" data-task-id="${task.id}" aria-label="Turunkan task ${escapeHtml(task.name)}" ${index === state.currentTasks.length - 1 ? "disabled" : ""}>↓</button>
+              </span>
             </div>
           </div>
           <div class="timeline-track" style="--today-left:${todayLeft}%;--slot-count:${slotCount};">
@@ -669,6 +678,22 @@
       row.addEventListener("dragend", () => {
         draggedId = null;
         rows.forEach(other => other.classList.remove("is-dragging", "drag-over", "drop-before", "drop-after"));
+      });
+    });
+  }
+
+  function attachMobileMoveControls() {
+    app.querySelectorAll(".mobile-move-btn").forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const taskId = button.dataset.taskId;
+        const index = state.currentTasks.findIndex(task => task.id === taskId);
+        if (index < 0) return;
+        const targetIndex = button.classList.contains("mobile-move-up") ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= state.currentTasks.length) return;
+        const targetId = state.currentTasks[targetIndex].id;
+        reorderTask(taskId, targetId, targetIndex < index ? "before" : "after");
       });
     });
   }

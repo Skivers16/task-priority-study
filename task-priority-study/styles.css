@@ -2720,3 +2720,166 @@ button,
     width: 100%;
   }
 }
+
+
+/* ===== Mobile responsive improvements for phones ===== */
+.mobile-move-controls {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  html, body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .page-shell {
+    width: calc(100% - 20px);
+    padding: 14px 0 16px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 2px 16px;
+  }
+
+  .panel {
+    border-radius: 16px;
+  }
+
+  .panel-head,
+  .panel-head.study-head,
+  .panel-head.landing-head {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 22px 16px 18px;
+  }
+
+  h1 {
+    font-size: clamp(27px, 8vw, 36px);
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+
+  h2 { font-size: 25px; }
+  .lead { font-size: 14px; line-height: 1.65; }
+
+  .panel-rule { margin: 0 16px; }
+  .intro-body { padding: 16px; }
+  .intro-grid,
+  .intro-grid-compact,
+  .trial-highlight-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .info-card,
+  .device-recommendation,
+  .quick-note {
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .trial-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .timer-card { min-width: 112px; }
+  .trial-progress { flex-wrap: wrap; }
+  .trial-highlight-grid { margin: 0 16px 16px; }
+
+  .instruction-strip,
+  .scenario-reminder,
+  .error-banner {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .view-container { padding: 0 10px; }
+  .view-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+  }
+
+  /* Keep the timeline readable; swipe horizontally rather than compressing dates. */
+  .gantt-shell { min-width: 920px; }
+  .task-table { min-width: 690px; }
+  .task-table th { padding: 0 9px 8px; font-size: 10px; }
+  .task-table td { padding: 9px; height: 58px; font-size: 12px; }
+  .task-name { font-size: 13px; overflow-wrap: anywhere; }
+  .task-copy, .gantt-task-copy { min-width: 0; }
+
+  /* Native HTML drag-and-drop is unreliable on touch screens, so provide accessible arrows. */
+  .mobile-move-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 7px;
+  }
+
+  .mobile-move-btn {
+    display: inline-flex;
+    width: 34px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d8def7;
+    border-radius: 8px;
+    background: #f4f6ff;
+    color: #344bc0;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .mobile-move-btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+
+  .gantt-label-head { padding-left: 10px; }
+  .timeline-header, .timeline-track { min-width: 0; }
+
+  .form-actions,
+  .trial-footer,
+  .trial-footer-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .trial-footer { padding: 18px 16px 22px; }
+  .trial-footer-actions .btn,
+  .form-actions .btn,
+  .btn { width: 100%; min-height: 44px; }
+
+  .date-stamp { align-self: flex-start; }
+  .instruction-modal { width: calc(100vw - 28px); max-width: 420px; padding: 22px 18px; }
+  .site-footer { padding: 14px 4px; text-align: center; }
+}
+
+@media (max-width: 380px) {
+  .page-shell { width: calc(100% - 14px); }
+  .panel-head, .panel-head.study-head, .panel-head.landing-head { padding: 18px 12px 16px; }
+  .intro-body { padding: 12px; }
+  .view-container { padding: 0 6px; }
+  .trial-meta { align-items: stretch; }
+  .view-chip { font-size: 11px; }
+  .timer-card { min-width: 100px; }
+}
