@@ -396,15 +396,15 @@
 
             <section class="info-card briefing-instruction-card">
               <h3>Instruksi tahap ${stageNumber}</h3>
-              <div class="briefing-view-focus"><span class="briefing-view-kicker">TAMPILAN YANG AKAN DIGUNAKAN</span><strong>${upcomingViewName}</strong><span>${upcomingView === "gantt" ? "Perhatikan posisi dan panjang bar untuk membaca rentang tanggal serta deadline." : "Perhatikan kolom deadline untuk membandingkan tanggal setiap task."}</span></div>
+              <p class="briefing-view-copy">Pada tahap ini Anda akan menggunakan <strong>${upcomingViewName}</strong>.</p>
 
               <div class="briefing-point-list">
                 <label class="briefing-check-item">
                   <input type="checkbox" class="briefing-check-input" id="briefing-check-1">
                   <span class="briefing-check-box" aria-hidden="true"></span>
                   <span class="briefing-check-text">
-                    <strong>Fokus pada deadline</strong>
-                    <small>Gunakan deadline sebagai dasar utama untuk menentukan prioritas task.</small>
+                    <strong>Deadline terdekat = prioritas 1</strong>
+                    <small>Tempatkan task dengan tanggal deadline paling dekat di urutan paling atas.</small>
                   </span>
                 </label>
 
@@ -412,8 +412,8 @@
                   <input type="checkbox" class="briefing-check-input" id="briefing-check-2">
                   <span class="briefing-check-box" aria-hidden="true"></span>
                   <span class="briefing-check-text">
-                    <strong>Susun urutan 1–10</strong>
-                    <small>Urutan paling atas menunjukkan prioritas task yang paling penting untuk dikerjakan lebih dulu.</small>
+                    <strong>Lanjutkan ke deadline yang lebih jauh</strong>
+                    <small>Urutkan task berikutnya dari deadline yang lebih dekat ke yang lebih jauh. Jika deadline sama, pertimbangkan informasi task lainnya.</small>
                   </span>
                 </label>
               </div>
@@ -497,7 +497,7 @@
         <div class="trial-highlight-grid">
           <div class="highlight-card primary">
             <span class="highlight-label">Fokus utama</span>
-            <strong>Urutkan prioritas task dari 1–10 berdasarkan deadline menurut Anda</strong>
+            <strong>Urutkan task dari deadline paling dekat (prioritas 1) hingga deadline paling jauh (prioritas 10).</strong>
           </div>
           <div class="highlight-card secondary">
             <span class="highlight-label">Waktu hari ini</span>
@@ -512,12 +512,11 @@
             <span class="drag-instruction-icon" aria-hidden="true">↕</span>
             <span class="drag-instruction-copy">
               <strong>Cara mengubah urutan</strong>
-              <span>Klik dan tahan baris task, lalu seret ke posisi yang diinginkan.</span>
+              <span>Letakkan deadline paling dekat di urutan 1, lalu susun deadline yang semakin jauh. Klik dan tahan baris task untuk mengubah urutan. ${state.currentView === "gantt" ? "Ujung kanan bar menunjukkan deadline; panjang bar bukan tingkat prioritas." : "Gunakan kolom deadline sebagai acuan utama."}</span>
             </span>
           </div>
           <div class="view-caption">
             <span class="caption-title">${state.currentView === "list" ? "Daftar task" : "Timeline task"}</span>
-            ${state.currentView === "gantt" ? '<button class="mobile-task-toggle" id="mobile-task-toggle" type="button" aria-expanded="true">Sembunyikan daftar task <span aria-hidden="true">←</span></button>' : ""}
           </div>
           <div class="view-scroll">${state.currentView === "list" ? renderListView() : renderGanttView()}</div>
         </div>
@@ -534,16 +533,13 @@
             <section class="instruction-modal compact-instruction-modal lighter-instruction-modal" role="dialog" aria-modal="true" aria-labelledby="trial-instruction-title">
               <span class="modal-eyebrow">Tahap ${stageNumber}</span>
               <h3 id="trial-instruction-title">Sebelum mulai, ${escapeHtml(state.participantName)}</h3>
-              <div class="instruction-view-focus">
-                <span class="instruction-view-kicker">TAMPILAN YANG AKAN DIKERJAKAN</span>
-                <strong>${viewName}</strong>
-                <span>${state.currentView === "gantt" ? "Perhatikan posisi dan panjang bar untuk membaca rentang tanggal serta deadline." : "Perhatikan kolom deadline untuk membandingkan tanggal setiap task."}</span>
-              </div>
-              <p class="modal-main-instruction">Susun prioritas berdasarkan deadline, dari yang paling perlu dikerjakan lebih dulu.</p>
+              <p class="modal-main-instruction">Mulai dari task dengan deadline paling dekat, lalu urutkan task lainnya hingga deadline paling jauh.</p>
               <div class="modal-rule-list compact-rule-list">
-                <p><span class="modal-rule-number">1</span><span>Urutan <strong>1</strong> = prioritas paling atas.</span></p>
+                <p><span class="modal-rule-number">1</span><span>Prioritas <strong>1</strong> = deadline paling dekat.</span></p>
+                <p><span class="modal-rule-number">10</span><span>Prioritas <strong>10</strong> = deadline paling jauh.</span></p>
                 <p><span class="modal-rule-number">↕</span><span>Seret baris task untuk mengubah urutan.</span></p>
               </div>
+              ${state.currentView === "gantt" ? '<p class="modal-deadline-note">Pada Gantt Chart, perhatikan ujung kanan bar untuk melihat tanggal deadline. Panjang bar menunjukkan rentang pengerjaan, bukan prioritas.</p>' : ''}
               <button class="btn btn-primary modal-start-button" id="start-trial-button" type="button">Mulai tahap ${stageNumber} <span aria-hidden="true">→</span></button>
             </section>
           </div>
@@ -553,20 +549,7 @@
     document.getElementById("submit-trial").addEventListener("click", handleTrialSubmit);
     const startButton = document.getElementById("start-trial-button");
     if (startButton) startButton.addEventListener("click", startTrial);
-    const taskToggle = document.getElementById("mobile-task-toggle");
-    if (taskToggle) {
-      taskToggle.addEventListener("click", () => {
-        const viewContainer = document.querySelector(".view-container");
-        if (!viewContainer) return;
-        const collapsed = viewContainer.classList.toggle("task-column-collapsed");
-        taskToggle.setAttribute("aria-expanded", String(!collapsed));
-        taskToggle.innerHTML = collapsed
-          ? 'Tampilkan daftar task <span aria-hidden="true">→</span>'
-          : 'Sembunyikan daftar task <span aria-hidden="true">←</span>';
-      });
-    }
     attachReorderEvents();
-    attachMobileMoveControls();
     updateTimer();
   }
 
@@ -578,10 +561,6 @@
           <div class="task-copy">
             <span class="task-code">${task.id}</span>
             <span class="task-name">${escapeHtml(task.name)}</span>
-            <span class="mobile-move-controls" aria-label="Ubah urutan ${escapeHtml(task.name)}">
-              <button type="button" class="mobile-move-btn mobile-move-up" data-task-id="${task.id}" aria-label="Naikkan task ${escapeHtml(task.name)}" ${index === 0 ? "disabled" : ""}>↑</button>
-              <button type="button" class="mobile-move-btn mobile-move-down" data-task-id="${task.id}" aria-label="Turunkan task ${escapeHtml(task.name)}" ${index === state.currentTasks.length - 1 ? "disabled" : ""}>↓</button>
-            </span>
           </div>
         </td>
         <td class="date-cell">${shortDate(task.startDay)}</td>
@@ -628,10 +607,6 @@
             <div class="gantt-task-copy">
               <span class="task-code">${task.id}</span>
               <span class="task-name">${escapeHtml(task.name)}</span>
-              <span class="mobile-move-controls" aria-label="Ubah urutan ${escapeHtml(task.name)}">
-                <button type="button" class="mobile-move-btn mobile-move-up" data-task-id="${task.id}" aria-label="Naikkan task ${escapeHtml(task.name)}" ${index === 0 ? "disabled" : ""}>↑</button>
-                <button type="button" class="mobile-move-btn mobile-move-down" data-task-id="${task.id}" aria-label="Turunkan task ${escapeHtml(task.name)}" ${index === state.currentTasks.length - 1 ? "disabled" : ""}>↓</button>
-              </span>
             </div>
           </div>
           <div class="timeline-track" style="--today-left:${todayLeft}%;--slot-count:${slotCount};">
@@ -700,22 +675,6 @@
     });
   }
 
-  function attachMobileMoveControls() {
-    app.querySelectorAll(".mobile-move-btn").forEach(button => {
-      button.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const taskId = button.dataset.taskId;
-        const index = state.currentTasks.findIndex(task => task.id === taskId);
-        if (index < 0) return;
-        const targetIndex = button.classList.contains("mobile-move-up") ? index - 1 : index + 1;
-        if (targetIndex < 0 || targetIndex >= state.currentTasks.length) return;
-        const targetId = state.currentTasks[targetIndex].id;
-        reorderTask(taskId, targetId, targetIndex < index ? "before" : "after");
-      });
-    });
-  }
-
   function reorderTask(sourceId, targetId, position = "before") {
     const fromIndex = state.currentTasks.findIndex(task => task.id === sourceId);
     if (fromIndex < 0) return;
@@ -727,36 +686,7 @@
     }
     const insertIndex = targetIndex + (position === "after" ? 1 : 0);
     state.currentTasks.splice(insertIndex, 0, movedTask);
-
-    // Preserve the respondent's current viewport when the task order rerenders.
-    // This prevents the horizontal timeline from snapping back to the left edge.
-    const scrollContainer = app.querySelector(".view-scroll");
-    const savedScrollLeft = scrollContainer ? scrollContainer.scrollLeft : 0;
-    const savedScrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
-    const savedPageX = window.scrollX;
-    const savedPageY = window.scrollY;
-    const savedCollapsed = app.querySelector(".view-container")?.classList.contains("task-column-collapsed") || false;
-
     renderTrial();
-
-    const restoreViewport = () => {
-      const nextScrollContainer = app.querySelector(".view-scroll");
-      const nextViewContainer = app.querySelector(".view-container");
-      if (nextViewContainer && savedCollapsed) {
-        nextViewContainer.classList.add("task-column-collapsed");
-        const toggle = app.querySelector("#mobile-task-toggle");
-        if (toggle) {
-          toggle.setAttribute("aria-expanded", "false");
-          toggle.innerHTML = 'Tampilkan daftar task <span aria-hidden="true">→</span>';
-        }
-      }
-      if (nextScrollContainer) {
-        nextScrollContainer.scrollLeft = savedScrollLeft;
-        nextScrollContainer.scrollTop = savedScrollTop;
-      }
-      window.scrollTo(savedPageX, savedPageY);
-    };
-    requestAnimationFrame(restoreViewport);
   }
 
   async function handleTrialSubmit() {
