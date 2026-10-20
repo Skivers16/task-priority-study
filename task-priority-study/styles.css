@@ -2883,3 +2883,71 @@ button,
   .view-chip { font-size: 11px; }
   .timer-card { min-width: 100px; }
 }
+
+/* ===== Mobile usability: sticky task labels and date headers ===== */
+@media (max-width: 600px) {
+  /* Keep the visualization in its own scroll area so its headers can stay visible. */
+  .view-scroll {
+    max-height: 68vh;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* Gantt: pin the date row to the top and the task names to the left. */
+  .gantt-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+  }
+
+  .gantt-label-head {
+    position: sticky;
+    left: 0;
+    z-index: 12;
+    min-width: 0;
+    background: #fff;
+    box-shadow: 2px 0 0 #e5e8f0;
+  }
+
+  .gantt-task {
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    background: #f3f4f6;
+    box-shadow: 2px 0 0 #e5e8f0;
+  }
+
+  /* List View: keep column headings visible while scrolling vertically. */
+  .task-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    background: #f8f9fc;
+  }
+
+  .task-table thead th:first-child,
+  .task-table tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 6;
+    background: #f8f9fc;
+  }
+
+  .task-table thead th:nth-child(2),
+  .task-table tbody td:nth-child(2) {
+    position: sticky;
+    left: 76px;
+    z-index: 5;
+    background: #fff;
+    box-shadow: 2px 0 0 #e5e8f0;
+  }
+
+  .task-table thead th:first-child,
+  .task-table thead th:nth-child(2) {
+    z-index: 9;
+    background: #f8f9fc;
+  }
+}
